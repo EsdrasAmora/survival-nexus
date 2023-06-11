@@ -1,0 +1,18 @@
+{
+    "transforms": [
+        {
+            "mode": "sql",
+            "include": "**/*.sql",
+            "emitTemplate": "{{dir}}/{{name}}.queries.ts"
+        }
+    ],
+    "srcDir": "./src/",
+    "failOnError": false,
+    "camelCaseColumnNames": false,
+    "db": {
+        "user": "survival_nexus_user",
+        "dbName": "survival_nexus_db",
+        "password": "survival_nexus_password",
+        "ssl": false
+    }
+}
