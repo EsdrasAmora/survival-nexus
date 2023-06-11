@@ -1,0 +1,17 @@
+services:
+  database:
+    image: postgres:15.1-alpine
+    ports:
+      - '5432:5432'
+    volumes:
+      - /var/survival-nexus-postgres:/app-db-dumps
+    environment:
+      - POSTGRES_USER=survival_nexus_user
+      - POSTGRES_PASSWORD=survival_nexus_password
+      - POSTGRES_DB=survival_nexus_db
+  server:
+    image: esdras-amora/survival-nexus:latest
+    ports:
+      - '3000:3000'
+    build:
+      dockerfile: Dockerfile
