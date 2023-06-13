@@ -16,6 +16,7 @@ import { PaginatedSurvivorDto } from './dto/list-survivors.dto';
 import { DbClient } from '../shared/db.service';
 import { TradeSuvivorItemDto } from './dto/trade-suvivor-item.dto';
 import { PoolClient } from 'pg';
+import { UpdateSuvivorItemDto } from './dto/update-suvivor-item.dto';
 
 @Injectable()
 export class SurvivorService {
@@ -40,11 +41,27 @@ export class SurvivorService {
     return survivor;
   }
 
+  async _updateItems(transaction: PoolClient, survivorId: number, input: UpdateSuvivorItemDto) {
+    const [current] = await lockSurvivorItems.run({ itemId: input.itemId, survivorIds: [survivorId] }, transaction);
+
+    if (current.quantity === -input.quantity) {
+      return deleteSurvivalItem.run({ itemId: input.itemId, survivorId: input.quantity }, transaction);
+    }
+
+    return upsertSurvivorItems.run(
+      {
+        survivorId,
+        itemId: input.itemId,
+        quantity: input.quantity,
+      },
+      transaction,
+    );
+  }
+
   async trade(toSurvivorId: number, input: TradeSuvivorItemDto) {
     await this.dbClient.transaction((client) => this._trade(client, toSurvivorId, input));
   }
 
-  //TODO: rename from/source and to/destination.
   private async _trade(transaction: PoolClient, toSurvivorId: number, input: TradeSuvivorItemDto) {
     const items = await lockSurvivorItems.run(
       { itemId: input.itemId, survivorIds: [toSurvivorId, input.fromSurvivorId] },
@@ -112,4 +129,3 @@ export class SurvivorService {
     );
   }
 }
-// findOne and delete are unecessary

@@ -120,6 +120,9 @@ table "trades" {
   primary_key {
     columns = [column.trade_id]
   }
+  check "trades_item_id_check" {
+    expr = "value BETWEEN 1 AND 10"
+  }
   foreign_key "trades_item_id_fkey" {
     columns     = [column.item_id]
     ref_columns = [table.items.column.item_id]
