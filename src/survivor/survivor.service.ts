@@ -25,7 +25,7 @@ export class SurvivorService {
     const [survivor] = await createSurvivor.run(
       {
         ...input,
-        lastLocation: { x: input.lastLocation.lat, y: input.lastLocation.lng },
+        lastLocation: input.lastLocation && `(${input.lastLocation.lat}, ${input.lastLocation.lng})`,
       },
       this.dbClient,
     );
@@ -106,7 +106,7 @@ export class SurvivorService {
       {
         ...input,
         survivorId,
-        lastLocation: input.lastLocation && { x: input.lastLocation.lat, y: input.lastLocation.lng },
+        lastLocation: input.lastLocation && `(${input.lastLocation.lat}, ${input.lastLocation.lng})`,
       },
       this.dbClient,
     );

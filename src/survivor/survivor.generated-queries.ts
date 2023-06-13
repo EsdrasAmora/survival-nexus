@@ -10,7 +10,7 @@ export interface ICreateSurvivorParams {
   birthday: Date | string;
   gender: gender_type;
   infected: boolean;
-  lastLocation?: { x: number; y: number } | null | void;
+  lastLocation?: string /*(x,y)*/  | null | void;
   name: string;
 }
 
@@ -96,7 +96,7 @@ export interface IUpdateSurvivorParams {
   birthday?: Date | string | null | void;
   gender?: gender_type | null | void;
   infected?: boolean | null | void;
-  lastLocation?: { x: number; y: number } | null | void;
+  lastLocation?: string /*(x,y)*/  | null | void;
   name?: string | null | void;
   survivorId: number;
 }

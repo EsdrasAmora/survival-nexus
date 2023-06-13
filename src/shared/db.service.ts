@@ -7,6 +7,7 @@ export class DbClient implements IDatabaseConnection, OnModuleInit, OnModuleDest
   private pool: Pool;
 
   async onModuleInit() {
+    // types.setTypeParser(types.builtins.POLYGON, (val: string) => val);
     //TODO: get env variables from config
 
     this.pool = new Pool({
@@ -16,6 +17,20 @@ export class DbClient implements IDatabaseConnection, OnModuleInit, OnModuleDest
       idleTimeoutMillis: 30000,
       query_timeout: 10000,
     });
+
+    const oldPoolQuery = this.pool.query;
+    this.pool.query = (...args: any) => {
+      console.log('QUERY:', args);
+      return oldPoolQuery.apply(this.pool, args);
+    };
+
+    // this.pool.on('connect', (client) => {
+    //   client.on('drain', (msg) => {
+    //     console.log('aqui');
+    //     console.log('Query:', msg);
+    //   });
+    // });
+
     console.log('Test connection:', (await this.pool.query('SELECT NOW()')).rows[0].now);
   }
 

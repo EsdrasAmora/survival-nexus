@@ -16,6 +16,9 @@
         "ssl": false
     },
     "typesOverrides": {
-        "point": "{ x: number; y: number }"
+        "point": {
+            "parameter": "string /*(x,y)*/ ",
+            "return": "{ x: number; y: number }"
+        }
     }
 }
