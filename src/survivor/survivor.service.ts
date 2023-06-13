@@ -1,26 +1,51 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateSurvivorDto } from './dto/create-survivor.dto';
 import { UpdateSurvivorDto } from './dto/update-survivor.dto';
+import { PaginatedSurvivor } from './entities/paginated-survivor';
+import { createSurvivor, findManySurvivors, updateSurvivor } from './survivor.generated-queries';
+import { PaginatedSurvivorDto } from './dto/list-survivors.dto';
 
 @Injectable()
 export class SurvivorService {
-  create(createSurvivorDto: CreateSurvivorDto) {
-    return 'This action adds a new survivor';
+  constructor() {
+    //inject PG here
   }
 
-  findAll() {
-    return `This action returns all survivor`;
+  async create(input: CreateSurvivorDto) {
+    const [survivor] = await createSurvivor.run(
+      {
+        ...input,
+        lastLocation: { x: input.lastLocation.lat, y: input.lastLocation.lng },
+      },
+      {} as any,
+    );
+    if (!survivor) {
+      throw new InternalServerErrorException('Error creating survivor');
+    }
+    //remove others from query
+    return survivor.id;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} survivor`;
+  async list({ cursorId, limit }: PaginatedSurvivorDto): Promise<PaginatedSurvivor> {
+    const survivors = await findManySurvivors.run({ cursorId, limit }, {} as any);
+    return {
+      total: survivors[0]?.total ?? 0,
+      survivors: survivors.map((it) => ({
+        ...it,
+        lastLocation: it.lastLocation && { lat: it.lastLocation.x, lng: it.lastLocation.y },
+      })),
+    };
   }
 
-  update(id: number, updateSurvivorDto: UpdateSurvivorDto) {
-    return `This action updates a #${id} survivor`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} survivor`;
+  async update(survivorId: number, input: UpdateSurvivorDto) {
+    await updateSurvivor.run(
+      {
+        ...input,
+        survivorId,
+        lastLocation: input.lastLocation && { x: input.lastLocation.lat, y: input.lastLocation.lng },
+      },
+      {} as any,
+    );
   }
 }
+// findOne and delete are unecessary

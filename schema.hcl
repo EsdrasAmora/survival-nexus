@@ -1,19 +1,20 @@
 table "items" {
   schema = schema.public
   column "item_id" {
-    null = false
     type = integer
     identity {
       generated = ALWAYS
     }
   }
   column "name" {
-    null = false
     type = text
   }
   column "description" {
-    null = false
     type = text
+  }
+  column "created_at" {
+    type    = timestamptz
+    default = sql("now()")
   }
   primary_key {
     columns = [column.item_id]
@@ -22,22 +23,18 @@ table "items" {
 table "survivors" {
   schema = schema.public
   column "survivor_id" {
-    null = false
     type = integer
     identity {
       generated = ALWAYS
     }
   }
   column "name" {
-    null = false
     type = text
   }
   column "birthday" {
-    null = false
     type = timestamptz
   }
   column "gender" {
-    null = false
     type = enum.gender_type
   }
   column "last_location" {
@@ -45,7 +42,6 @@ table "survivors" {
     type = point
   }
   column "infected" {
-    null = false
     type = boolean
   }
   column "deleted_at" {
@@ -53,7 +49,6 @@ table "survivors" {
     type = timestamptz
   }
   column "created_at" {
-    null    = false
     type    = timestamptz
     default = sql("now()")
   }
@@ -68,19 +63,15 @@ table "survivors" {
 table "survivors_items" {
   schema = schema.public
   column "survivor_id" {
-    null = false
     type = integer
   }
   column "item_id" {
-    null = false
     type = integer
   }
   column "quantity" {
-    null = false
     type = integer
   }
   column "created_at" {
-    null    = false
     type    = timestamptz
     default = sql("now()")
   }
@@ -107,28 +98,22 @@ table "survivors_items" {
 table "trades" {
   schema = schema.public
   column "trade_id" {
-    null    = false
     type    = uuid
     default = sql("gen_random_uuid()")
   }
   column "from_survivor_id" {
-    null = false
     type = integer
   }
   column "to_survivor_id" {
-    null = false
     type = integer
   }
   column "item_id" {
-    null = false
     type = integer
   }
   column "quantity" {
-    null = false
     type = integer
   }
   column "created_at" {
-    null    = false
     type    = timestamptz
     default = sql("now()")
   }

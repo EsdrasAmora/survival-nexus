@@ -1,34 +1,27 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { SurvivorService } from './survivor.service';
+import { Body, Controller, Param, Patch, Post } from '@nestjs/common';
 import { CreateSurvivorDto } from './dto/create-survivor.dto';
 import { UpdateSurvivorDto } from './dto/update-survivor.dto';
+import { SurvivorService } from './survivor.service';
 
-@Controller('survivor')
+@Controller('survivors')
 export class SurvivorController {
   constructor(private readonly survivorService: SurvivorService) {}
 
+  //create token too
   @Post()
   create(@Body() createSurvivorDto: CreateSurvivorDto) {
     return this.survivorService.create(createSurvivorDto);
   }
 
-  @Get()
-  findAll() {
-    return this.survivorService.findAll();
+  @Patch()
+  update(@Body() updateSurvivorDto: UpdateSurvivorDto) {
+    // get it from context userId/survivorId
+    const id = 3;
+    return this.survivorService.update(id, updateSurvivorDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.survivorService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSurvivorDto: UpdateSurvivorDto) {
-    return this.survivorService.update(+id, updateSurvivorDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.survivorService.remove(+id);
+  @Post('items')
+  updateItems(@Param('id') id: number, @Body() updateSurvivorDto: UpdateSurvivorDto) {
+    return this.survivorService.update(id, updateSurvivorDto);
   }
 }

@@ -3,7 +3,7 @@
         {
             "mode": "sql",
             "include": "**/*.sql",
-            "emitTemplate": "{{dir}}/{{name}}.queries.ts"
+            "emitTemplate": "{{dir}}/{{name}}.generated-queries.ts"
         }
     ],
     "srcDir": "./src/",
@@ -14,5 +14,8 @@
         "dbName": "survival_nexus_db",
         "password": "survival_nexus_password",
         "ssl": false
+    },
+    "typesOverrides": {
+        "point": "{ x: number; y: number }"
     }
 }
