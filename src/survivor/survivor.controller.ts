@@ -1,7 +1,8 @@
-import { Body, Controller, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { CreateSurvivorDto } from './dto/create-survivor.dto';
 import { UpdateSurvivorDto } from './dto/update-survivor.dto';
 import { SurvivorService } from './survivor.service';
+import { PaginatedSurvivorDto } from './dto/list-survivors.dto';
 
 @Controller('survivors')
 export class SurvivorController {
@@ -11,6 +12,11 @@ export class SurvivorController {
   @Post()
   create(@Body() createSurvivorDto: CreateSurvivorDto) {
     return this.survivorService.create(createSurvivorDto);
+  }
+
+  @Get()
+  list(@Body() paginatedSurvivorDto: PaginatedSurvivorDto) {
+    return this.survivorService.list(paginatedSurvivorDto);
   }
 
   @Patch()

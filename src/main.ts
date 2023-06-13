@@ -1,26 +1,22 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { findManySurvivors } from './survivor/survivor.generated-queries';
-import { Client } from 'pg';
 import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-  // const dbConfig = {
-  //   host: 'localhost',
-  //   user: 'survival_nexus_user',
-  //   password: 'survival_nexus_password',
-  //   database: 'survival_nexus_db',
-  //   port: 5432,
-  // };
-  console.log(process.env.DATABASE_URL);
-  const client = new Client({ connectionString: process.env.DATABASE_URL });
-  await client.connect();
-  const survivors = await findManySurvivors.run({ cursorId: 0, limit: 11 }, client);
-
-  console.log(survivors.find((survivor) => survivor.id === 11));
-  throw 'asdasd';
-
   const app = await NestFactory.create(AppModule);
+
+  app.enableShutdownHooks();
+
+  const config = new DocumentBuilder()
+    .setTitle('Survivor Nexus API')
+    .setDescription('Survivor API - Saving the world one survivor at a time')
+    .setVersion('1.0')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+
+  SwaggerModule.setup('api', app, document);
+
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(3000);
 }

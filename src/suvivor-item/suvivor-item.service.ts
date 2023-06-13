@@ -1,11 +1,14 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateSuvivorItemDto } from './dto/create-item.dto';
 import { createItem, findAllItems } from './survivor-item.generated-queries';
+import { DbClient } from '../shared/db.service';
 
 @Injectable()
 export class SuvivorItemService {
+  constructor(private dbClient: DbClient) {}
+
   async create(createSuvivorItemDto: CreateSuvivorItemDto) {
-    const [item] = await createItem.run(createSuvivorItemDto, {} as any);
+    const [item] = await createItem.run(createSuvivorItemDto, this.dbClient);
     if (!item) {
       throw new InternalServerErrorException('Error creating item');
     }
@@ -13,6 +16,6 @@ export class SuvivorItemService {
   }
 
   findAll() {
-    return findAllItems.run(undefined, {} as any);
+    return findAllItems.run(undefined, this.dbClient);
   }
 }

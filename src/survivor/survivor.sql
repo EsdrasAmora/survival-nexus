@@ -8,15 +8,22 @@ VALUES
         :gender !,
         :lastLocation,
         :infected !
-    ) RETURNING survivor_id AS "id",
+    ) RETURNING survivor_id AS "id";
+
+/* @name FindSurvivorById */
+SELECT
+    survivor_id AS "id",
     NAME AS "name",
-    birthday AS "birthday",
-    gender AS "gender",
+    birthday,
+    gender,
+    infected,
     last_location AS "lastLocation",
-    infected AS "infected",
-    deleted_at AS "deletedAt",
     created_at AS "createdAt",
-    updated_at AS "updatedAt";
+    updated_at AS "updatedAt"
+FROM
+    survivors
+WHERE
+    survivor_id = :survivorId !;
 
 /* @name UpdateSurvivor */
 UPDATE
@@ -53,7 +60,7 @@ ORDER BY
 LIMIT
     :limit !;
 
-/* @name TradeItems */
+/* @name TradeSurvivorItems */
 INSERT INTO
     trades (
         item_id,
@@ -69,7 +76,14 @@ VALUES
         :toSurvivorId !
     ) RETURNING trade_id AS "tradeId";
 
-/* @name UpdateItems */
+/* @name DeleteSurvivalItem */
+DELETE FROM
+    survivors_items
+WHERE
+    survivor_id = :survivorId !
+    AND item_id = :itemId !;
+
+/* @name UpsertSurvivorItems */
 INSERT INTO
     survivors_items (
         survivor_id,
@@ -88,7 +102,7 @@ SET
 
 /* @name LockSurvivorItems */
 SELECT
-    survivor_id,
+    survivor_id AS "survivorId",
     quantity
 FROM
     survivors_items
