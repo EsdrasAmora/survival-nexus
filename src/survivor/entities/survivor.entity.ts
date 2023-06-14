@@ -1,5 +1,5 @@
 import { Gender } from '../gender.enum';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { GeoLocation } from '../location';
 
 export class Survivor {
@@ -15,7 +15,7 @@ export class Survivor {
   @ApiProperty()
   gender: Gender;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   lastLocation: GeoLocation | null;
 
   @ApiProperty()

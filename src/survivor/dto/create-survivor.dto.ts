@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsDateString, IsEnum, IsOptional, IsBoolean } from 'class-validator';
 import { Gender } from '../gender.enum';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { GeoLocation } from '../location';
 
 export class CreateSurvivorDto {
@@ -17,7 +17,7 @@ export class CreateSurvivorDto {
   gender: Gender;
 
   @IsOptional()
-  @ApiProperty()
+  @ApiPropertyOptional()
   lastLocation: GeoLocation;
 
   @IsBoolean()

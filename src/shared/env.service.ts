@@ -11,6 +11,7 @@ export const EnvSchema = z.object({
   CRYPTO_DEFAULT_PASSWORD_LENGTH: z.coerce.number(),
   SERVER_DOMAIN: z.string().default('http://localhost:3000'),
   JWT_SECRET: z.string(),
+  NO_COLOR: z.boolean().optional(),
   JWT_EXPIRATION_TIME: z.string().default('1d'),
   DATABASE_CONNECTION_LIMIT: z.coerce.number().default(30),
   DATABASE_CONNECTION_POOL_TIMEOUT: z.coerce.number().default(15),

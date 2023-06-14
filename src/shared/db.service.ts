@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { Injectable, OnModuleInit, OnModuleDestroy, Logger } from '@nestjs/common';
 import { IDatabaseConnection } from '@pgtyped/runtime/lib/tag';
 import { Pool, PoolClient } from 'pg';
 import { AppConfigService } from './env.service';
@@ -6,6 +6,7 @@ import { AppConfigService } from './env.service';
 @Injectable()
 export class DbClient implements IDatabaseConnection, OnModuleInit, OnModuleDestroy {
   private pool: Pool;
+  private readonly logger = new Logger(DbClient.name);
 
   constructor(private config: AppConfigService) {}
 
@@ -21,15 +22,14 @@ export class DbClient implements IDatabaseConnection, OnModuleInit, OnModuleDest
     //TODO: remove this logging
     const oldPoolQuery = this.pool.query;
     this.pool.query = (...args: any) => {
-      console.log('QUERY:', args);
+      this.logger.log(`QUERY: ${args}`);
       return oldPoolQuery.apply(this.pool, args);
     };
 
     try {
-      console.log('Test connection:', (await this.pool.query('SELECT NOW()')).rows[0].now);
+      this.logger.log(`Test connection: ${(await this.pool.query('SELECT NOW()')).rows[0].now}`);
     } catch (err) {
-      console.error(err);
-      throw new Error('Error connecting to database');
+      throw new Error('Error connecting to database', { cause: err });
     }
   }
 

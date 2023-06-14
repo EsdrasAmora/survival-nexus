@@ -82,6 +82,9 @@ table "survivors_items" {
   primary_key {
     columns = [column.survivor_id, column.item_id]
   }
+  check "survivors_items_quantity_not_zero_check" {
+    expr = "quantity != 0"
+  }
   foreign_key "survivors_items_item_id_fkey" {
     columns     = [column.item_id]
     ref_columns = [table.items.column.item_id]
@@ -120,8 +123,8 @@ table "trades" {
   primary_key {
     columns = [column.trade_id]
   }
-  check "trades_item_id_check" {
-    expr = "value BETWEEN 1 AND 10"
+  check "trades_quantity_not_zero_check" {
+    expr = "quantity != 0"
   }
   foreign_key "trades_item_id_fkey" {
     columns     = [column.item_id]
