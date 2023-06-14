@@ -1,10 +1,20 @@
 /* @name CreateSurvivor */
 INSERT INTO
-    survivors (NAME, birthday, gender, last_location, infected)
+    survivors (
+        NAME,
+        birthday,
+        gender,
+        last_location,
+        infected,
+        hashed_password,
+        password_salt
+    )
 VALUES
     (
         :name !,
         :birthday !,
+        :hashedPassword !,
+        :passwordSalt !,
         :gender !,
         :lastLocation,
         :infected !
@@ -14,6 +24,7 @@ VALUES
 SELECT
     survivor_id AS "id",
     NAME AS "name",
+    email,
     birthday,
     gender,
     infected,
@@ -24,6 +35,24 @@ FROM
     survivors
 WHERE
     survivor_id = :survivorId !;
+
+/* @name FindSurvivorByEmail */
+SELECT
+    survivor_id AS "id",
+    NAME AS "name",
+    email,
+    birthday,
+    gender,
+    infected,
+    password_salt AS "passwordSalt",
+    hashed_password AS "hashedPassword",
+    last_location AS "lastLocation",
+    created_at AS "createdAt",
+    updated_at AS "updatedAt"
+FROM
+    survivors
+WHERE
+    email = :email !;
 
 /* @name UpdateSurvivor */
 UPDATE
@@ -39,7 +68,6 @@ WHERE
     survivor_id = :survivorId !;
 
 /* @name FindManySurvivors */
-/* random comment  123*/
 SELECT
     (COUNT(*) OVER()) :: INT AS "total!",
     survivor_id AS "id",

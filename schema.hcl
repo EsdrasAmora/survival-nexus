@@ -48,6 +48,15 @@ table "survivors" {
     null = true
     type = timestamptz
   }
+  column "email" {
+    type = text
+  }
+  column "password_salt" {
+    type = text
+  }
+  column "hashed_password" {
+    type = text
+  }
   column "created_at" {
     type    = timestamptz
     default = sql("now()")
@@ -58,6 +67,12 @@ table "survivors" {
   }
   primary_key {
     columns = [column.survivor_id]
+  }
+  index "survivors_email_key" {
+    columns = [
+      column.email
+    ]
+    unique = true
   }
 }
 table "survivors_items" {

@@ -54,6 +54,7 @@ export interface IFindSurvivorByIdParams {
 export interface IFindSurvivorByIdResult {
   birthday: Date;
   createdAt: Date;
+  email: string;
   gender: gender_type;
   id: number;
   infected: boolean;
@@ -68,7 +69,7 @@ export interface IFindSurvivorByIdQuery {
   result: IFindSurvivorByIdResult;
 }
 
-const findSurvivorByIdIR: any = {"usedParamSet":{"survivorId":true},"params":[{"name":"survivorId","required":true,"transform":{"type":"scalar"},"locs":[{"a":233,"b":245}]}],"statement":"SELECT\n    survivor_id AS \"id\",\n    NAME AS \"name\",\n    birthday,\n    gender,\n    infected,\n    last_location AS \"lastLocation\",\n    created_at AS \"createdAt\",\n    updated_at AS \"updatedAt\"\nFROM\n    survivors\nWHERE\n    survivor_id = :survivorId !"};
+const findSurvivorByIdIR: any = {"usedParamSet":{"survivorId":true},"params":[{"name":"survivorId","required":true,"transform":{"type":"scalar"},"locs":[{"a":244,"b":256}]}],"statement":"SELECT\n    survivor_id AS \"id\",\n    NAME AS \"name\",\n    email,\n    birthday,\n    gender,\n    infected,\n    last_location AS \"lastLocation\",\n    created_at AS \"createdAt\",\n    updated_at AS \"updatedAt\"\nFROM\n    survivors\nWHERE\n    survivor_id = :survivorId !"};
 
 /**
  * Query generated from SQL:
@@ -76,6 +77,7 @@ const findSurvivorByIdIR: any = {"usedParamSet":{"survivorId":true},"params":[{"
  * SELECT
  *     survivor_id AS "id",
  *     NAME AS "name",
+ *     email,
  *     birthday,
  *     gender,
  *     infected,
@@ -89,6 +91,58 @@ const findSurvivorByIdIR: any = {"usedParamSet":{"survivorId":true},"params":[{"
  * ```
  */
 export const findSurvivorById = new PreparedQuery<IFindSurvivorByIdParams,IFindSurvivorByIdResult>(findSurvivorByIdIR);
+
+
+/** 'FindSurvivorByEmail' parameters type */
+export interface IFindSurvivorByEmailParams {
+  email: string;
+}
+
+/** 'FindSurvivorByEmail' return type */
+export interface IFindSurvivorByEmailResult {
+  birthday: Date;
+  createdAt: Date;
+  email: string;
+  gender: gender_type;
+  hashedPassword: string;
+  id: number;
+  infected: boolean;
+  lastLocation: { x: number; y: number } | null;
+  name: string;
+  passwordSalt: string;
+  updatedAt: Date | null;
+}
+
+/** 'FindSurvivorByEmail' query type */
+export interface IFindSurvivorByEmailQuery {
+  params: IFindSurvivorByEmailParams;
+  result: IFindSurvivorByEmailResult;
+}
+
+const findSurvivorByEmailIR: any = {"usedParamSet":{"email":true},"params":[{"name":"email","required":true,"transform":{"type":"scalar"},"locs":[{"a":316,"b":323}]}],"statement":"SELECT\n    survivor_id AS \"id\",\n    NAME AS \"name\",\n    email,\n    birthday,\n    gender,\n    infected,\n    password_salt AS \"passwordSalt\",\n    hashed_password AS \"hashedPassword\",\n    last_location AS \"lastLocation\",\n    created_at AS \"createdAt\",\n    updated_at AS \"updatedAt\"\nFROM\n    survivors\nWHERE\n    email = :email !"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT
+ *     survivor_id AS "id",
+ *     NAME AS "name",
+ *     email,
+ *     birthday,
+ *     gender,
+ *     infected,
+ *     password_salt AS "passwordSalt",
+ *     hashed_password AS "hashedPassword",
+ *     last_location AS "lastLocation",
+ *     created_at AS "createdAt",
+ *     updated_at AS "updatedAt"
+ * FROM
+ *     survivors
+ * WHERE
+ *     email = :email !
+ * ```
+ */
+export const findSurvivorByEmail = new PreparedQuery<IFindSurvivorByEmailParams,IFindSurvivorByEmailResult>(findSurvivorByEmailIR);
 
 
 /** 'UpdateSurvivor' parameters type */

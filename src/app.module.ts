@@ -3,8 +3,9 @@ import { SurvivorModule } from './survivor/survivor.module';
 import { SuvivorItemModule } from './suvivor-item/suvivor-item.module';
 import { SharedModule } from './shared/shared.module';
 import { ConfigModule } from '@nestjs/config';
-import { EnvSchema } from './shared/env.service';
+import { AppConfigService } from './shared/env.service';
 import { LoggerModule } from 'nestjs-pino';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -22,8 +23,9 @@ import { LoggerModule } from 'nestjs-pino';
       isGlobal: true,
       cache: true,
       envFilePath: ['.env.development', '.env'],
-      validate: (config) => EnvSchema.parse(config),
+      validate: (config) => AppConfigService.EnvSchema.parse(config),
     }),
+    AuthModule,
   ],
 })
 export class AppModule {}

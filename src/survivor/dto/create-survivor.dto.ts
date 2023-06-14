@@ -23,4 +23,12 @@ export class CreateSurvivorDto {
   @IsBoolean()
   @ApiProperty()
   infected: boolean;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  email: string;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  password: string;
 }
