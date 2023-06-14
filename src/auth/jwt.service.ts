@@ -1,11 +1,13 @@
 import { verify, sign } from 'jsonwebtoken';
 import { z } from 'zod';
 import { AppConfigService } from '../shared/env.service';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class JwtService {
   private readonly BEARER: string = 'Bearer';
   private readonly jwtSchema = z.object({
-    data: z.object({ userId: z.string().uuid() }),
+    data: z.object({ survivorId: z.number().int().min(1) }),
     iat: z.number().int(),
     exp: z.number().int(),
   });
@@ -13,13 +15,8 @@ export class JwtService {
   constructor(private config: AppConfigService) {}
 
   verify(token: string) {
-    try {
-      const splitToken = token.split(' ')[1];
-      return this.jwtSchema.parse(verify(splitToken, this.config.get('JWT_SECRET')));
-    } catch (err) {
-      console.debug('Invalid JWT token', err.message);
-    }
-    return null;
+    const splitToken = token.split(' ')[1];
+    return this.jwtSchema.parse(verify(splitToken, this.config.get('JWT_SECRET')));
   }
 
   sign(payload: object): string {

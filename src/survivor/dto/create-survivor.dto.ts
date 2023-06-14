@@ -1,7 +1,17 @@
-import { IsNotEmpty, IsDateString, IsEnum, IsOptional, IsBoolean } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsDateString,
+  IsEnum,
+  IsOptional,
+  IsBoolean,
+  Validate,
+  IsEmail,
+  ValidateNested,
+} from 'class-validator';
 import { Gender } from '../gender.enum';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { GeoLocation } from '../location';
+import { PasswordValidator } from '../../shared/password.validator';
 
 export class CreateSurvivorDto {
   @IsNotEmpty()
@@ -17,6 +27,7 @@ export class CreateSurvivorDto {
   gender: Gender;
 
   @IsOptional()
+  @ValidateNested()
   @ApiPropertyOptional()
   lastLocation: GeoLocation;
 
@@ -25,10 +36,12 @@ export class CreateSurvivorDto {
   infected: boolean;
 
   @IsNotEmpty()
+  @IsEmail()
   @ApiProperty()
   email: string;
 
   @IsNotEmpty()
+  @Validate(PasswordValidator)
   @ApiProperty()
   password: string;
 }

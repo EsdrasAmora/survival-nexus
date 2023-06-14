@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { CreateSurvivorDto } from './dto/create-survivor.dto';
 import { UpdateSurvivorDto } from './dto/update-survivor.dto';
 import { PaginatedSurvivor } from './entities/paginated-survivor';
@@ -6,6 +6,7 @@ import {
   createSurvivor,
   deleteSurvivalItem,
   findManySurvivors,
+  findSurvivorByEmail,
   findSurvivorById,
   lockSurvivorItems,
   tradeSurvivorItems,
@@ -17,20 +18,47 @@ import { DbClient } from '../shared/db.service';
 import { TradeSuvivorItemDto } from './dto/trade-suvivor-item.dto';
 import { PoolClient } from 'pg';
 import { UpdateSuvivorItemDto } from './dto/update-suvivor-item.dto';
+import { CryptoService } from '../auth/crypto.service';
+import { JwtService } from '../auth/jwt.service';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class SurvivorService {
-  constructor(private dbClient: DbClient) {}
+  constructor(private dbClient: DbClient, private cryptoService: CryptoService, private jwtService: JwtService) {}
 
   async create(input: CreateSurvivorDto) {
+    const [sameEmailUser] = await findSurvivorByEmail.run({ email: input.email }, this.dbClient);
+
+    if (sameEmailUser) {
+      throw new ConflictException('Email already in use');
+    }
+
+    const passwordSalt = this.cryptoService.createSalt();
+    const hashedPassword = this.cryptoService.hashSaltPassword(input.password, passwordSalt);
+
     const [survivor] = await createSurvivor.run(
       {
         ...input,
+        hashedPassword,
+        passwordSalt,
         lastLocation: input.lastLocation && `(${input.lastLocation.lat}, ${input.lastLocation.lng})`,
       },
       this.dbClient,
     );
-    return survivor.id;
+    return { acessToken: this.jwtService.sign({ survivorId: survivor.id }) };
+  }
+
+  async login(input: LoginDto) {
+    const [survivor] = await findSurvivorByEmail.run({ email: input.email }, this.dbClient);
+
+    if (
+      !survivor ||
+      this.cryptoService.hashSaltPassword(input.password, survivor.passwordSalt) !== survivor.hashedPassword
+    ) {
+      throw new BadRequestException('Invalid credentials');
+    }
+
+    return { acessToken: this.jwtService.sign({ survivorId: survivor.id }) };
   }
 
   async findOneById(survivorId: number) {
@@ -41,7 +69,11 @@ export class SurvivorService {
     return survivor;
   }
 
-  async _updateItems(transaction: PoolClient, survivorId: number, input: UpdateSuvivorItemDto) {
+  async updateItems(toSurvivorId: number, input: UpdateSuvivorItemDto) {
+    await this.dbClient.transaction((client) => this._updateItems(client, toSurvivorId, input));
+  }
+
+  private async _updateItems(transaction: PoolClient, survivorId: number, input: UpdateSuvivorItemDto) {
     const [current] = await lockSurvivorItems.run({ itemId: input.itemId, survivorIds: [survivorId] }, transaction);
 
     if (current.quantity === -input.quantity) {

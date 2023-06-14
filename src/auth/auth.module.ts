@@ -3,7 +3,7 @@ import { CryptoService } from './crypto.service';
 import { JwtService } from './jwt.service';
 
 @Module({
-  imports: [CryptoService, JwtService],
+  providers: [CryptoService, JwtService],
   exports: [CryptoService, JwtService],
 })
 export class AuthModule {}

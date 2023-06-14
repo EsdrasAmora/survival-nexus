@@ -9,9 +9,11 @@ export type numberArray = (number)[];
 export interface ICreateSurvivorParams {
   birthday: Date | string;
   gender: gender_type;
+  hashedPassword: string;
   infected: boolean;
   lastLocation?: string /*(x,y)*/  | null | void;
   name: string;
+  passwordSalt: string;
 }
 
 /** 'CreateSurvivor' return type */
@@ -25,20 +27,30 @@ export interface ICreateSurvivorQuery {
   result: ICreateSurvivorResult;
 }
 
-const createSurvivorIR: any = {"usedParamSet":{"name":true,"birthday":true,"gender":true,"lastLocation":true,"infected":true},"params":[{"name":"name","required":true,"transform":{"type":"scalar"},"locs":[{"a":97,"b":103}]},{"name":"birthday","required":true,"transform":{"type":"scalar"},"locs":[{"a":114,"b":124}]},{"name":"gender","required":true,"transform":{"type":"scalar"},"locs":[{"a":135,"b":143}]},{"name":"lastLocation","required":false,"transform":{"type":"scalar"},"locs":[{"a":154,"b":166}]},{"name":"infected","required":true,"transform":{"type":"scalar"},"locs":[{"a":177,"b":187}]}],"statement":"INSERT INTO\n    survivors (NAME, birthday, gender, last_location, infected)\nVALUES\n    (\n        :name !,\n        :birthday !,\n        :gender !,\n        :lastLocation,\n        :infected !\n    ) RETURNING survivor_id AS \"id\""};
+const createSurvivorIR: any = {"usedParamSet":{"name":true,"birthday":true,"gender":true,"lastLocation":true,"infected":true,"hashedPassword":true,"passwordSalt":true},"params":[{"name":"name","required":true,"transform":{"type":"scalar"},"locs":[{"a":191,"b":197}]},{"name":"birthday","required":true,"transform":{"type":"scalar"},"locs":[{"a":208,"b":218}]},{"name":"gender","required":true,"transform":{"type":"scalar"},"locs":[{"a":229,"b":237}]},{"name":"lastLocation","required":false,"transform":{"type":"scalar"},"locs":[{"a":248,"b":260}]},{"name":"infected","required":true,"transform":{"type":"scalar"},"locs":[{"a":271,"b":281}]},{"name":"hashedPassword","required":true,"transform":{"type":"scalar"},"locs":[{"a":292,"b":308}]},{"name":"passwordSalt","required":true,"transform":{"type":"scalar"},"locs":[{"a":319,"b":333}]}],"statement":"INSERT INTO\n    survivors (\n        NAME,\n        birthday,\n        gender,\n        last_location,\n        infected,\n        hashed_password,\n        password_salt\n    )\nVALUES\n    (\n        :name !,\n        :birthday !,\n        :gender !,\n        :lastLocation,\n        :infected !,\n        :hashedPassword !,\n        :passwordSalt !\n    ) RETURNING survivor_id AS \"id\""};
 
 /**
  * Query generated from SQL:
  * ```
  * INSERT INTO
- *     survivors (NAME, birthday, gender, last_location, infected)
+ *     survivors (
+ *         NAME,
+ *         birthday,
+ *         gender,
+ *         last_location,
+ *         infected,
+ *         hashed_password,
+ *         password_salt
+ *     )
  * VALUES
  *     (
  *         :name !,
  *         :birthday !,
  *         :gender !,
  *         :lastLocation,
- *         :infected !
+ *         :infected !,
+ *         :hashedPassword !,
+ *         :passwordSalt !
  *     ) RETURNING survivor_id AS "id"
  * ```
  */
@@ -210,12 +222,11 @@ export interface IFindManySurvivorsQuery {
   result: IFindManySurvivorsResult;
 }
 
-const findManySurvivorsIR: any = {"usedParamSet":{"cursorId":true,"limit":true},"params":[{"name":"cursorId","required":true,"transform":{"type":"scalar"},"locs":[{"a":367,"b":377}]},{"name":"limit","required":true,"transform":{"type":"scalar"},"locs":[{"a":419,"b":426}]}],"statement":"                        \nSELECT\n    (COUNT(*) OVER()) :: INT AS \"total!\",\n    survivor_id AS \"id\",\n    NAME AS \"name\",\n    birthday AS \"birthday\",\n    gender AS \"gender\",\n    last_location AS \"lastLocation\",\n    infected AS \"infected\",\n    created_at AS \"createdAt\",\n    updated_at AS \"updatedAt\"\nFROM\n    survivors\nWHERE\n    deleted_at IS NULL\n    AND survivor_id > :cursorId !\nORDER BY\n    survivor_id DESC\nLIMIT\n    :limit !"};
+const findManySurvivorsIR: any = {"usedParamSet":{"cursorId":true,"limit":true},"params":[{"name":"cursorId","required":true,"transform":{"type":"scalar"},"locs":[{"a":342,"b":352}]},{"name":"limit","required":true,"transform":{"type":"scalar"},"locs":[{"a":394,"b":401}]}],"statement":"SELECT\n    (COUNT(*) OVER()) :: INT AS \"total!\",\n    survivor_id AS \"id\",\n    NAME AS \"name\",\n    birthday AS \"birthday\",\n    gender AS \"gender\",\n    last_location AS \"lastLocation\",\n    infected AS \"infected\",\n    created_at AS \"createdAt\",\n    updated_at AS \"updatedAt\"\nFROM\n    survivors\nWHERE\n    deleted_at IS NULL\n    AND survivor_id > :cursorId !\nORDER BY\n    survivor_id DESC\nLIMIT\n    :limit !"};
 
 /**
  * Query generated from SQL:
  * ```
- *                         
  * SELECT
  *     (COUNT(*) OVER()) :: INT AS "total!",
  *     survivor_id AS "id",

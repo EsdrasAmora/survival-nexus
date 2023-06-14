@@ -13,11 +13,11 @@ VALUES
     (
         :name !,
         :birthday !,
-        :hashedPassword !,
-        :passwordSalt !,
         :gender !,
         :lastLocation,
-        :infected !
+        :infected !,
+        :hashedPassword !,
+        :passwordSalt !
     ) RETURNING survivor_id AS "id";
 
 /* @name FindSurvivorById */

@@ -1,6 +1,8 @@
 import crypto from 'crypto';
 import { AppConfigService } from '../shared/env.service';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class CryptoService {
   constructor(private config: AppConfigService) {}
 

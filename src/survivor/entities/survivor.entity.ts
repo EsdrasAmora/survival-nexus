@@ -21,14 +21,3 @@ export class Survivor {
   @ApiProperty()
   infected: boolean;
 }
-
-// export const SurvivorSchema = z.object({
-//   id: z.number().optional(),
-//   name: z.string().nonempty(),
-//   birthday: z.date(),
-//   gender: z.nativeEnum(Gender),
-//   lastLocation: z.string().optional(),
-//   infected: z.boolean(),
-// });
-
-// export type Survivor = z.infer<typeof SurvivorSchema>;
