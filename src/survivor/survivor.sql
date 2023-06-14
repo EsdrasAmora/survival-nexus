@@ -139,3 +139,31 @@ WHERE
     AND survivor_id = ANY(:survivorIds ! :: INTEGER [ ]) FOR
 UPDATE
 ;
+
+/* @name InfectedSurvivorsReport */
+SELECT
+    infected,
+    COUNT(*) AS "amount",
+FROM
+    survivors
+GROUP BY
+    infected;
+
+/* @name ItemsPerSurvivorsReport */
+SELECT
+    si.item_id AS "itemId",
+    SUM(si.quantity) AS "amount",
+    MAX(survivors_count.total) AS "total",
+    SUM(si.quantity) :: FLOAT / MAX(survivors_count.total) AS "avarge"
+FROM
+    survivors_items si
+    CROSS JOIN (
+        SELECT
+            COUNT(*)
+        FROM
+            survivors
+    ) survivors_count (total)
+GROUP BY
+    si.item_id
+ORDER BY
+    amount DESC;
