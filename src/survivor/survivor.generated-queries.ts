@@ -340,7 +340,7 @@ export interface IUpsertSurvivorItemsQuery {
   result: IUpsertSurvivorItemsResult;
 }
 
-const upsertSurvivorItemsIR: any = {"usedParamSet":{"survivorId":true,"itemId":true,"quantity":true},"params":[{"name":"survivorId","required":true,"transform":{"type":"scalar"},"locs":[{"a":116,"b":128}]},{"name":"itemId","required":true,"transform":{"type":"scalar"},"locs":[{"a":139,"b":147}]},{"name":"quantity","required":true,"transform":{"type":"scalar"},"locs":[{"a":158,"b":168},{"a":267,"b":277}]}],"statement":"INSERT INTO\n    survivors_items (\n        survivor_id,\n        item_id,\n        quantity\n    )\nVALUES\n    (\n        :survivorId !,\n        :itemId !,\n        :quantity !\n    ) ON CONFLICT (survivor_id, item_id) DO\nUPDATE\nSET\n    quantity = survivors_items.quantity + :quantity !"};
+const upsertSurvivorItemsIR: any = {"usedParamSet":{"survivorId":true,"itemId":true,"quantity":true},"params":[{"name":"survivorId","required":true,"transform":{"type":"scalar"},"locs":[{"a":116,"b":128}]},{"name":"itemId","required":true,"transform":{"type":"scalar"},"locs":[{"a":139,"b":147}]},{"name":"quantity","required":true,"transform":{"type":"scalar"},"locs":[{"a":158,"b":168}]}],"statement":"INSERT INTO\n    survivors_items (\n        survivor_id,\n        item_id,\n        quantity\n    )\nVALUES\n    (\n        :survivorId !,\n        :itemId !,\n        :quantity !\n    ) ON CONFLICT (survivor_id, item_id) DO\nUPDATE\nSET\n    quantity = survivors_items.quantity + EXCLUDED.quantity"};
 
 /**
  * Query generated from SQL:
@@ -359,7 +359,7 @@ const upsertSurvivorItemsIR: any = {"usedParamSet":{"survivorId":true,"itemId":t
  *     ) ON CONFLICT (survivor_id, item_id) DO
  * UPDATE
  * SET
- *     quantity = survivors_items.quantity + :quantity !
+ *     quantity = survivors_items.quantity + EXCLUDED.quantity
  * ```
  */
 export const upsertSurvivorItems = new PreparedQuery<IUpsertSurvivorItemsParams,IUpsertSurvivorItemsResult>(upsertSurvivorItemsIR);
@@ -400,5 +400,81 @@ const lockSurvivorItemsIR: any = {"usedParamSet":{"itemId":true,"survivorIds":tr
  * ```
  */
 export const lockSurvivorItems = new PreparedQuery<ILockSurvivorItemsParams,ILockSurvivorItemsResult>(lockSurvivorItemsIR);
+
+
+/** 'InfectedSurvivorsReport' parameters type */
+export type IInfectedSurvivorsReportParams = void;
+
+/** 'InfectedSurvivorsReport' return type */
+export interface IInfectedSurvivorsReportResult {
+  amount: string | null;
+  infected: boolean;
+}
+
+/** 'InfectedSurvivorsReport' query type */
+export interface IInfectedSurvivorsReportQuery {
+  params: IInfectedSurvivorsReportParams;
+  result: IInfectedSurvivorsReportResult;
+}
+
+const infectedSurvivorsReportIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT\n    infected,\n    COUNT(*) AS \"amount\"\nFROM\n    survivors\nGROUP BY\n    infected                                                               "};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT
+ *     infected,
+ *     COUNT(*) AS "amount"
+ * FROM
+ *     survivors
+ * GROUP BY
+ *     infected                                                               
+ * ```
+ */
+export const infectedSurvivorsReport = new PreparedQuery<IInfectedSurvivorsReportParams,IInfectedSurvivorsReportResult>(infectedSurvivorsReportIR);
+
+
+/** 'ItemsPerSurvivorsReport' parameters type */
+export type IItemsPerSurvivorsReportParams = void;
+
+/** 'ItemsPerSurvivorsReport' return type */
+export interface IItemsPerSurvivorsReportResult {
+  amount: string | null;
+  avarge: number | null;
+  itemId: number;
+  total: string | null;
+}
+
+/** 'ItemsPerSurvivorsReport' query type */
+export interface IItemsPerSurvivorsReportQuery {
+  params: IItemsPerSurvivorsReportParams;
+  result: IItemsPerSurvivorsReportResult;
+}
+
+const itemsPerSurvivorsReportIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT\n    si.item_id AS \"itemId\",\n    SUM(si.quantity) AS \"amount\",\n    MAX(survivors_count.total) AS \"total\",\n    SUM(si.quantity) :: FLOAT / MAX(survivors_count.total) AS \"avarge\"\nFROM\n    survivors_items si\n    CROSS JOIN (\n        SELECT\n            COUNT(*)\n        FROM\n            survivors\n    ) survivors_count (total)\nGROUP BY\n    si.item_id\nORDER BY\n    amount DESC"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT
+ *     si.item_id AS "itemId",
+ *     SUM(si.quantity) AS "amount",
+ *     MAX(survivors_count.total) AS "total",
+ *     SUM(si.quantity) :: FLOAT / MAX(survivors_count.total) AS "avarge"
+ * FROM
+ *     survivors_items si
+ *     CROSS JOIN (
+ *         SELECT
+ *             COUNT(*)
+ *         FROM
+ *             survivors
+ *     ) survivors_count (total)
+ * GROUP BY
+ *     si.item_id
+ * ORDER BY
+ *     amount DESC
+ * ```
+ */
+export const itemsPerSurvivorsReport = new PreparedQuery<IItemsPerSurvivorsReportParams,IItemsPerSurvivorsReportResult>(itemsPerSurvivorsReportIR);
 
 

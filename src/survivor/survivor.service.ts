@@ -8,6 +8,8 @@ import {
   findManySurvivors,
   findSurvivorByEmail,
   findSurvivorById,
+  infectedSurvivorsReport,
+  itemsPerSurvivorsReport,
   lockSurvivorItems,
   tradeSurvivorItems,
   updateSurvivor,
@@ -67,6 +69,14 @@ export class SurvivorService {
       throw new Error('Survivor not found');
     }
     return survivor;
+  }
+
+  async infectedSurvivorsReport() {
+    return infectedSurvivorsReport.run(undefined, this.dbClient);
+  }
+
+  async itemsPerSurvivorsReport() {
+    return itemsPerSurvivorsReport.run(undefined, this.dbClient);
   }
 
   async updateItems(toSurvivorId: number, input: UpdateSuvivorItemDto) {

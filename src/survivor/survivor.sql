@@ -126,7 +126,7 @@ VALUES
     ) ON CONFLICT (survivor_id, item_id) DO
 UPDATE
 SET
-    quantity = survivors_items.quantity + :quantity !;
+    quantity = survivors_items.quantity + EXCLUDED.quantity;
 
 /* @name LockSurvivorItems */
 SELECT
@@ -143,12 +143,14 @@ UPDATE
 /* @name InfectedSurvivorsReport */
 SELECT
     infected,
-    COUNT(*) AS "amount",
+    COUNT(*) AS "amount"
 FROM
     survivors
 GROUP BY
     infected;
 
+/*TODO: name ListTrades  */
+/*TODO: name ListTradesOfSurvivor */
 /* @name ItemsPerSurvivorsReport */
 SELECT
     si.item_id AS "itemId",

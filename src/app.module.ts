@@ -6,16 +6,11 @@ import { ConfigModule } from '@nestjs/config';
 import { AppConfigService } from './shared/env.service';
 import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './auth/auth.module';
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
-    LoggerModule.forRoot({
-      //TODO: use propper env
-      // pinoHttp: {
-      //   level: process.env.NODE_ENV !== 'production' ? 'debug' : 'info',
-      //   transport: process.env.NODE_ENV !== 'production' ? { target: 'pino-pretty' } : undefined,
-      // },
-    }),
+    LoggerModule.forRoot(),
     SurvivorModule,
     SuvivorItemModule,
     SharedModule,
@@ -26,6 +21,7 @@ import { AuthModule } from './auth/auth.module';
       validate: (config) => AppConfigService.EnvSchema.parse(config),
     }),
     AuthModule,
+    SeedModule,
   ],
 })
 export class AppModule {}

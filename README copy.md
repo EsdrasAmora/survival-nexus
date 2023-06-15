@@ -5,7 +5,11 @@
 You must have NodeJS >=18 and PNPM >= 8 installed.
 Make sure to have PNPM and Docker desktop installed, then confirm that nothing else is running at http://localhost:3000.  
 Run `docker compose up -d --build` (root privileges may be necessary), migrate the database `pnpm migrate:dev`, then visit http://localhost:3000.  
-Use the swagger UI to make requests against the web server.  
+Use the swagger UI to make requests against the web server.
+
+<!-- migrate: -->
+<!-- atlas schema apply   -u "postgresql://survival_nexus_user:survival_nexus_password@localhost:5432/survival_nexus_db?sslmode=disable"   --to file://schema.hcl  -->
+
 \*\*Obs: it was developed and tested only on Linux (EndevaourOS).
 
 ## Developing and Testing

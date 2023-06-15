@@ -4,7 +4,6 @@ import { SurvivorService } from './survivor.service';
 import { PaginatedSurvivorDto } from './dto/list-survivors.dto';
 import { AuthGuard } from '../auth/auth.guard';
 import { Token, TokenData } from '../auth/token-data.decorator';
-import { UpdateSuvivorItemDto } from './dto/update-suvivor-item.dto';
 import { TradeSuvivorItemDto } from './dto/trade-suvivor-item.dto';
 
 @Controller('survivors')
@@ -20,11 +19,6 @@ export class SurvivorController {
   @Post('items/trade')
   trade(@Token() { survivorId }: TokenData, @Body() data: TradeSuvivorItemDto) {
     return this.survivorService.trade(survivorId, data);
-  }
-
-  @Post('items')
-  updateItems(@Token() { survivorId }: TokenData, @Body() data: UpdateSuvivorItemDto) {
-    return this.survivorService.updateItems(survivorId, data);
   }
 
   @Patch()

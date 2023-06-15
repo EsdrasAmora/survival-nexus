@@ -8,9 +8,9 @@ import {
   IsEmail,
   ValidateNested,
 } from 'class-validator';
-import { Gender } from '../gender.enum';
+import { Gender } from '../entities/gender.enum';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { GeoLocation } from '../location';
+import { GeoLocation } from '../entities/location';
 import { PasswordValidator } from '../../shared/password.validator';
 
 export class CreateSurvivorDto {

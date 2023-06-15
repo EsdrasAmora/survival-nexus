@@ -2,6 +2,7 @@ import { Injectable, OnModuleInit, OnModuleDestroy, Logger } from '@nestjs/commo
 import { IDatabaseConnection } from '@pgtyped/runtime/lib/tag';
 import { Pool, PoolClient } from 'pg';
 import { AppConfigService } from './env.service';
+import { stringify } from 'querystring';
 
 @Injectable()
 export class DbClient implements IDatabaseConnection, OnModuleInit, OnModuleDestroy {
@@ -19,17 +20,10 @@ export class DbClient implements IDatabaseConnection, OnModuleInit, OnModuleDest
       query_timeout: 10000,
     });
 
-    //TODO: remove this logging
-    const oldPoolQuery = this.pool.query;
-    this.pool.query = (...args: any) => {
-      this.logger.log(`QUERY: ${args}`);
-      return oldPoolQuery.apply(this.pool, args);
-    };
-
     try {
       this.logger.log(`Test connection: ${(await this.pool.query('SELECT NOW()')).rows[0].now}`);
     } catch (err) {
-      throw new Error('Error connecting to database', { cause: err });
+      throw new Error('Error connecting to database', { cause: stringify(err) });
     }
   }
 

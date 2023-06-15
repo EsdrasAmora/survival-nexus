@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateSuvivorItemDto } from './dto/create-item.dto';
 import { createItem, findAllItems } from './survivor-item.generated-queries';
 import { DbClient } from '../shared/db.service';
@@ -9,9 +9,6 @@ export class SuvivorItemService {
 
   async create(createSuvivorItemDto: CreateSuvivorItemDto) {
     const [item] = await createItem.run(createSuvivorItemDto, this.dbClient);
-    if (!item) {
-      throw new InternalServerErrorException('Error creating item');
-    }
     return item.itemId;
   }
 

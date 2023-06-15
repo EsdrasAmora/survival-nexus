@@ -23,7 +23,7 @@ RUN pnpm prune --prod
 FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION}
 
 WORKDIR /home/node
-# COPY .env ./.env
+COPY .env.development ./.env
 COPY --from=build /home/app/node_modules ./node_modules/
 COPY --from=build /home/app/dist ./dist/
 EXPOSE 3000
