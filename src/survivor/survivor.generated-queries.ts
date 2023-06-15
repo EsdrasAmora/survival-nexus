@@ -8,6 +8,7 @@ export type numberArray = (number)[];
 /** 'CreateSurvivor' parameters type */
 export interface ICreateSurvivorParams {
   birthday: Date | string;
+  email: string;
   gender: gender_type;
   hashedPassword: string;
   infected: boolean;
@@ -27,7 +28,7 @@ export interface ICreateSurvivorQuery {
   result: ICreateSurvivorResult;
 }
 
-const createSurvivorIR: any = {"usedParamSet":{"name":true,"birthday":true,"gender":true,"lastLocation":true,"infected":true,"hashedPassword":true,"passwordSalt":true},"params":[{"name":"name","required":true,"transform":{"type":"scalar"},"locs":[{"a":191,"b":197}]},{"name":"birthday","required":true,"transform":{"type":"scalar"},"locs":[{"a":208,"b":218}]},{"name":"gender","required":true,"transform":{"type":"scalar"},"locs":[{"a":229,"b":237}]},{"name":"lastLocation","required":false,"transform":{"type":"scalar"},"locs":[{"a":248,"b":260}]},{"name":"infected","required":true,"transform":{"type":"scalar"},"locs":[{"a":271,"b":281}]},{"name":"hashedPassword","required":true,"transform":{"type":"scalar"},"locs":[{"a":292,"b":308}]},{"name":"passwordSalt","required":true,"transform":{"type":"scalar"},"locs":[{"a":319,"b":333}]}],"statement":"INSERT INTO\n    survivors (\n        NAME,\n        birthday,\n        gender,\n        last_location,\n        infected,\n        hashed_password,\n        password_salt\n    )\nVALUES\n    (\n        :name !,\n        :birthday !,\n        :gender !,\n        :lastLocation,\n        :infected !,\n        :hashedPassword !,\n        :passwordSalt !\n    ) RETURNING survivor_id AS \"id\""};
+const createSurvivorIR: any = {"usedParamSet":{"name":true,"birthday":true,"gender":true,"email":true,"lastLocation":true,"infected":true,"hashedPassword":true,"passwordSalt":true},"params":[{"name":"name","required":true,"transform":{"type":"scalar"},"locs":[{"a":206,"b":212}]},{"name":"birthday","required":true,"transform":{"type":"scalar"},"locs":[{"a":223,"b":233}]},{"name":"gender","required":true,"transform":{"type":"scalar"},"locs":[{"a":244,"b":252}]},{"name":"email","required":true,"transform":{"type":"scalar"},"locs":[{"a":263,"b":270}]},{"name":"lastLocation","required":false,"transform":{"type":"scalar"},"locs":[{"a":281,"b":293}]},{"name":"infected","required":true,"transform":{"type":"scalar"},"locs":[{"a":304,"b":314}]},{"name":"hashedPassword","required":true,"transform":{"type":"scalar"},"locs":[{"a":325,"b":341}]},{"name":"passwordSalt","required":true,"transform":{"type":"scalar"},"locs":[{"a":352,"b":366}]}],"statement":"INSERT INTO\n    survivors (\n        NAME,\n        birthday,\n        gender,\n        email,\n        last_location,\n        infected,\n        hashed_password,\n        password_salt\n    )\nVALUES\n    (\n        :name !,\n        :birthday !,\n        :gender !,\n        :email !,\n        :lastLocation,\n        :infected !,\n        :hashedPassword !,\n        :passwordSalt !\n    ) RETURNING survivor_id AS \"id\""};
 
 /**
  * Query generated from SQL:
@@ -37,6 +38,7 @@ const createSurvivorIR: any = {"usedParamSet":{"name":true,"birthday":true,"gend
  *         NAME,
  *         birthday,
  *         gender,
+ *         email,
  *         last_location,
  *         infected,
  *         hashed_password,
@@ -47,6 +49,7 @@ const createSurvivorIR: any = {"usedParamSet":{"name":true,"birthday":true,"gend
  *         :name !,
  *         :birthday !,
  *         :gender !,
+ *         :email !,
  *         :lastLocation,
  *         :infected !,
  *         :hashedPassword !,

@@ -9,6 +9,7 @@ export interface ICreateSurvivorsParams {
     name: string,
     birthday: Date | string,
     gender: gender_type,
+    email: string,
     lastLocation: string /*(x,y)*/ ,
     infected: boolean,
     hashedPassword: string,
@@ -27,7 +28,7 @@ export interface ICreateSurvivorsQuery {
   result: ICreateSurvivorsResult;
 }
 
-const createSurvivorsIR: any = {"usedParamSet":{"newSurvivors":true},"params":[{"name":"newSurvivors","required":false,"transform":{"type":"pick_array_spread","keys":[{"name":"name","required":true},{"name":"birthday","required":true},{"name":"gender","required":true},{"name":"lastLocation","required":true},{"name":"infected","required":true},{"name":"hashedPassword","required":true},{"name":"passwordSalt","required":true}]},"locs":[{"a":181,"b":193}]}],"statement":"INSERT INTO\n    survivors (\n        NAME,\n        birthday,\n        gender,\n        last_location,\n        infected,\n        hashed_password,\n        password_salt\n    )\nVALUES\n    :newSurvivors RETURNING survivor_id AS \"id\""};
+const createSurvivorsIR: any = {"usedParamSet":{"newSurvivors":true},"params":[{"name":"newSurvivors","required":false,"transform":{"type":"pick_array_spread","keys":[{"name":"name","required":true},{"name":"birthday","required":true},{"name":"gender","required":true},{"name":"email","required":true},{"name":"lastLocation","required":true},{"name":"infected","required":true},{"name":"hashedPassword","required":true},{"name":"passwordSalt","required":true}]},"locs":[{"a":196,"b":208}]}],"statement":"INSERT INTO\n    survivors (\n        NAME,\n        birthday,\n        gender,\n        email,\n        last_location,\n        infected,\n        hashed_password,\n        password_salt\n    )\nVALUES\n    :newSurvivors RETURNING survivor_id AS \"id\""};
 
 /**
  * Query generated from SQL:
@@ -37,6 +38,7 @@ const createSurvivorsIR: any = {"usedParamSet":{"newSurvivors":true},"params":[{
  *         NAME,
  *         birthday,
  *         gender,
+ *         email,
  *         last_location,
  *         infected,
  *         hashed_password,
@@ -52,8 +54,8 @@ export const createSurvivors = new PreparedQuery<ICreateSurvivorsParams,ICreateS
 /** 'GiveItems' parameters type */
 export interface IGiveItemsParams {
   itemSurvivorPair: readonly ({
-    itemId: number,
     survivorId: number,
+    itemId: number,
     quantity: number
   })[];
 }
@@ -67,7 +69,7 @@ export interface IGiveItemsQuery {
   result: IGiveItemsResult;
 }
 
-const giveItemsIR: any = {"usedParamSet":{"itemSurvivorPair":true},"params":[{"name":"itemSurvivorPair","required":false,"transform":{"type":"pick_array_spread","keys":[{"name":"itemId","required":true},{"name":"survivorId","required":true},{"name":"quantity","required":true}]},"locs":[{"a":106,"b":122}]}],"statement":"INSERT INTO\n    survivors_items (\n        survivor_id,\n        item_id,\n        quantity\n    )\nVALUES\n    :itemSurvivorPair ON CONFLICT (survivor_id, item_id) DO\nUPDATE\nSET\n    quantity = survivors_items.quantity + EXCLUDED.quantity"};
+const giveItemsIR: any = {"usedParamSet":{"itemSurvivorPair":true},"params":[{"name":"itemSurvivorPair","required":false,"transform":{"type":"pick_array_spread","keys":[{"name":"survivorId","required":true},{"name":"itemId","required":true},{"name":"quantity","required":true}]},"locs":[{"a":106,"b":122}]}],"statement":"INSERT INTO\n    survivors_items (\n        survivor_id,\n        item_id,\n        quantity\n    )\nVALUES\n    :itemSurvivorPair"};
 
 /**
  * Query generated from SQL:
@@ -79,10 +81,7 @@ const giveItemsIR: any = {"usedParamSet":{"itemSurvivorPair":true},"params":[{"n
  *         quantity
  *     )
  * VALUES
- *     :itemSurvivorPair ON CONFLICT (survivor_id, item_id) DO
- * UPDATE
- * SET
- *     quantity = survivors_items.quantity + EXCLUDED.quantity
+ *     :itemSurvivorPair
  * ```
  */
 export const giveItems = new PreparedQuery<IGiveItemsParams,IGiveItemsResult>(giveItemsIR);
@@ -114,37 +113,49 @@ const truncateAllTablesIR: any = {"usedParamSet":{},"params":[],"statement":"TRU
 export const truncateAllTables = new PreparedQuery<ITruncateAllTablesParams,ITruncateAllTablesResult>(truncateAllTablesIR);
 
 
-/** Query 'ResetAllSequences' is invalid, so its result is assigned type 'never'.
- * Query contains an anonymous column. Consider giving the column an explicit name. */
-export type IResetAllSequencesResult = never;
+/** 'ResetSurvivorsSeq' parameters type */
+export type IResetSurvivorsSeqParams = void;
 
-/** Query 'ResetAllSequences' is invalid, so its parameters are assigned type 'never'.
- * Query contains an anonymous column. Consider giving the column an explicit name. */
-export type IResetAllSequencesParams = never;
+/** 'ResetSurvivorsSeq' return type */
+export type IResetSurvivorsSeqResult = void;
 
-const resetAllSequencesIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT\n    'SELECT SETVAL(' || quote_literal(\n        quote_ident(sequence_namespace.nspname) || '.' || quote_ident(class_sequence.relname)\n    ) || ', COALESCE(MAX(' || quote_ident(pg_attribute.attname) || '), 1) ) FROM ' || quote_ident(table_namespace.nspname) || '.' || quote_ident(class_table.relname) || ';'\nFROM\n    pg_depend\n    INNER JOIN pg_class AS class_sequence ON class_sequence.oid = pg_depend.objid\n    AND class_sequence.relkind = 'S'\n    INNER JOIN pg_class AS class_table ON class_table.oid = pg_depend.refobjid\n    INNER JOIN pg_attribute ON pg_attribute.attrelid = class_table.oid\n    AND pg_depend.refobjsubid = pg_attribute.attnum\n    INNER JOIN pg_namespace AS table_namespace ON table_namespace.oid = class_table.relnamespace\n    INNER JOIN pg_namespace AS sequence_namespace ON sequence_namespace.oid = class_sequence.relnamespace\nORDER BY\n    sequence_namespace.nspname,\n    class_sequence.relname"};
+/** 'ResetSurvivorsSeq' query type */
+export interface IResetSurvivorsSeqQuery {
+  params: IResetSurvivorsSeqParams;
+  result: IResetSurvivorsSeqResult;
+}
+
+const resetSurvivorsSeqIR: any = {"usedParamSet":{},"params":[],"statement":"ALTER SEQUENCE survivors_survivor_id_seq RESTART WITH 1"};
 
 /**
  * Query generated from SQL:
  * ```
- * SELECT
- *     'SELECT SETVAL(' || quote_literal(
- *         quote_ident(sequence_namespace.nspname) || '.' || quote_ident(class_sequence.relname)
- *     ) || ', COALESCE(MAX(' || quote_ident(pg_attribute.attname) || '), 1) ) FROM ' || quote_ident(table_namespace.nspname) || '.' || quote_ident(class_table.relname) || ';'
- * FROM
- *     pg_depend
- *     INNER JOIN pg_class AS class_sequence ON class_sequence.oid = pg_depend.objid
- *     AND class_sequence.relkind = 'S'
- *     INNER JOIN pg_class AS class_table ON class_table.oid = pg_depend.refobjid
- *     INNER JOIN pg_attribute ON pg_attribute.attrelid = class_table.oid
- *     AND pg_depend.refobjsubid = pg_attribute.attnum
- *     INNER JOIN pg_namespace AS table_namespace ON table_namespace.oid = class_table.relnamespace
- *     INNER JOIN pg_namespace AS sequence_namespace ON sequence_namespace.oid = class_sequence.relnamespace
- * ORDER BY
- *     sequence_namespace.nspname,
- *     class_sequence.relname
+ * ALTER SEQUENCE survivors_survivor_id_seq RESTART WITH 1
  * ```
  */
-export const resetAllSequences = new PreparedQuery<IResetAllSequencesParams,IResetAllSequencesResult>(resetAllSequencesIR);
+export const resetSurvivorsSeq = new PreparedQuery<IResetSurvivorsSeqParams,IResetSurvivorsSeqResult>(resetSurvivorsSeqIR);
+
+
+/** 'ResetItemsSeq' parameters type */
+export type IResetItemsSeqParams = void;
+
+/** 'ResetItemsSeq' return type */
+export type IResetItemsSeqResult = void;
+
+/** 'ResetItemsSeq' query type */
+export interface IResetItemsSeqQuery {
+  params: IResetItemsSeqParams;
+  result: IResetItemsSeqResult;
+}
+
+const resetItemsSeqIR: any = {"usedParamSet":{},"params":[],"statement":"ALTER SEQUENCE items_item_id_seq RESTART WITH 1"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * ALTER SEQUENCE items_item_id_seq RESTART WITH 1
+ * ```
+ */
+export const resetItemsSeq = new PreparedQuery<IResetItemsSeqParams,IResetItemsSeqResult>(resetItemsSeqIR);
 
 

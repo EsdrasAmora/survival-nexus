@@ -1,20 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { DbClient } from '../shared/db.service';
-import { createSurvivors, giveItems, resetAllSequences, truncateAllTables } from './seed.generated-queries';
+import {
+  createSurvivors,
+  giveItems,
+  truncateAllTables,
+  resetItemsSeq,
+  resetSurvivorsSeq,
+  IGiveItemsParams,
+} from './seed.generated-queries';
 import { faker } from '@faker-js/faker';
-import { JwtService } from '../auth/jwt.service';
 import { CryptoService } from '../auth/crypto.service';
 import { Gender } from '../survivor/entities/gender.enum';
 import { createItem } from '../suvivor-item/survivor-item.generated-queries';
+import type { Writeable } from 'zod';
 
 @Injectable()
 export class SeedService {
-  constructor(private dbClient: DbClient, private jwtService: JwtService, private cryptoService: CryptoService) {}
+  constructor(private dbClient: DbClient, private cryptoService: CryptoService) {}
 
   async reset() {
     await truncateAllTables.run(undefined, this.dbClient);
-    await resetAllSequences.run(undefined as never, this.dbClient);
+    //would be good to reset all sequences in one query
+    await resetItemsSeq.run(undefined, this.dbClient);
+    await resetSurvivorsSeq.run(undefined, this.dbClient);
   }
+
+  private readonly survivorsCount = 200;
 
   async seed() {
     await this.reset();
@@ -23,10 +34,11 @@ export class SeedService {
 
     await createSurvivors.run(
       {
-        newSurvivors: Array.from({ length: 200 })
+        newSurvivors: Array.from({ length: this.survivorsCount })
           .fill(0)
           .map(() => ({
             birthday: faker.date.birthdate(),
+            email: faker.internet.email(),
             infected: faker.datatype.boolean(),
             gender: faker.helpers.enumValue(Gender),
             lastLocation: `(${faker.location.latitude()}, ${faker.location.longitude()})`,
@@ -45,17 +57,21 @@ export class SeedService {
       createItem.run({ description: 'Description 4', name: 'C-Virus Vaccine' }, this.dbClient),
     ]);
 
-    await giveItems.run(
-      {
-        itemSurvivorPair: Array.from({ length: 200 })
-          .fill(0)
-          .map(() => ({
-            itemId: faker.number.int({ min: 1, max: 4 }),
-            survivorId: faker.number.int({ min: 1, max: 200 }),
-            quantity: faker.number.int({ min: 1, max: 4 }),
-          })),
-      },
-      this.dbClient,
-    );
+    const itemSurvivorPair: Writeable<IGiveItemsParams['itemSurvivorPair']> = [];
+
+    for (let survivorId = 1; survivorId < this.survivorsCount; survivorId++) {
+      for (let itemId = 1; itemId < 4; itemId++) {
+        if (faker.datatype.boolean(0.4)) {
+          continue;
+        }
+        itemSurvivorPair.push({
+          survivorId,
+          itemId,
+          quantity: faker.number.int({ min: 1, max: 20 }),
+        });
+      }
+    }
+
+    await giveItems.run({ itemSurvivorPair }, this.dbClient);
   }
 }
