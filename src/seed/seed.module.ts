@@ -4,10 +4,10 @@ import { SharedModule } from '../shared/shared.module';
 import { AuthModule } from '../auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { AppConfigService } from '../shared/env.service';
+import { MigrationService } from './migrate.service';
 
 @Module({
-  providers: [SeedService],
-  exports: [SeedService],
+  providers: [SeedService, MigrationService],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,

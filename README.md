@@ -1,73 +1,31 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Survival Nexus - The last API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Getting Started
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+You must have [NodeJS](https://nodejs.org/en) >=18 and [PNPM](https://pnpm.io/installation) >= 8 installed.
 
-## Description
+1. Run `pnpm install` to install the packages.
+1. Start the database with `docker compose up database -d`.
+1. Migrate the database `pnpm migrate:dev`, add some data with `pnpm seed`.
+1. Confirm that nothing else is running at http://localhost:3000.
+1. Run `pnpm test` to run the tests.
+1. Run `pnpm start:dev` to run the code with file watch.
+1. Visit http://localhost:3000 and use the swagger UI to make requests against the web server.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Docker
 
-## Installation
+You must have [Docker](https://docs.docker.com/get-docker/), installed.  
+Run `docker compose up -d --build` (root privileges may be necessary).
 
-```bash
-$ pnpm install
-```
+## Stack
 
-## Running the app
+I could have used [Prisma](https://www.prisma.io/), witch I'm already familiar with, but decided to used some other options that was interested in.
+For migrations and to manage the database schema I used [atlas](https://atlasgo.io/).
+It's pretty similar to the way that Prisma migrate works, but seems to be way less limiting.
+For querying I used [Pgtyped](https://pgtyped.dev/docs/) to generate type safe definitions from sql queries.
 
-```bash
-# development
-$ pnpm run start
+I wanted to use zod instead of class-validators but got no time to try it out ([nestjs-zod](https://www.npmjs.com/package/nestjs-zod)).
+I haven't used NestJS mutch before doing this. I like the modules and DI stuff, but besides that I didn't like it that mutch.
+I probably could have done better in some organizational aspects, probably would split the modules/services in a different way.
 
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
-```
-
-## Test
-
-```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+\*\*Obs: this project was developed and tested only on Linux (EndevaourOS).
