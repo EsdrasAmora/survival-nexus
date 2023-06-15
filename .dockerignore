@@ -1,0 +1,13 @@
+.git/
+dist/
+node_modules/
+src/**/*.spec.ts
+/test/
+.env
+.eslintignore
+.eslintrc.json
+.gitignore
+.prettierrc.json
+docker-compose.yml
+Dockerfile
+README.md

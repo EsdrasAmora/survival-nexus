@@ -9,9 +9,9 @@ services:
       - POSTGRES_USER=survival_nexus_user
       - POSTGRES_PASSWORD=survival_nexus_password
       - POSTGRES_DB=survival_nexus_db
-  # server:
-  #   image: esdras-amora/survival-nexus:latest
-  #   ports:
-  #     - '3000:3000'
-  #   build:
-  #     dockerfile: Dockerfile
+  server:
+    image: esdras-amora/survival-nexus:latest
+    ports:
+      - '3000:3000'
+    build:
+      dockerfile: Dockerfile

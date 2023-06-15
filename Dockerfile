@@ -17,15 +17,15 @@ COPY . .
 # RUN pnpm run db:codegen #probably unnecessary
 RUN pnpm run typecheck
 RUN pnpm run build
-RUN pnpm prune --prod
+# RUN pnpm prune --prod
 
 # ---- Release ----
 FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION}
 
 WORKDIR /home/node
-COPY .env.development ./.env
+COPY .docker.env ./.env
 COPY --from=build /home/app/node_modules ./node_modules/
 COPY --from=build /home/app/dist ./dist/
 EXPOSE 3000
 
-ENTRYPOINT ["node", "dist/index.js"]
+ENTRYPOINT ["node", "dist/main.js"]
