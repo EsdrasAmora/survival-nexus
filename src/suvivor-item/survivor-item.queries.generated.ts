@@ -1,4 +1,4 @@
-/** Types generated for queries found in "src/suvivor-item/survivor-item.sql" */
+/** Types generated for queries found in "src/suvivor-item/survivor-item.queries.sql" */
 import { PreparedQuery } from '@pgtyped/runtime';
 
 /** 'CreateItem' parameters type */

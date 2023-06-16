@@ -2,8 +2,8 @@
     "transforms": [
         {
             "mode": "sql",
-            "include": "**/*.sql",
-            "emitTemplate": "{{dir}}/{{name}}.generated-queries.ts"
+            "include": "**/*.queries.sql",
+            "emitTemplate": "{{dir}}/{{name}}.generated.ts"
         }
     ],
     "srcDir": "./src/",

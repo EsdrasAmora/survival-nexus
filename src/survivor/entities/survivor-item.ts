@@ -1,12 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class Item {
+export class SurvivorItem {
   @ApiProperty()
   id: number;
 
   @ApiProperty()
-  name: string;
-
-  @ApiProperty()
-  description: string;
+  quantity: number;
 }

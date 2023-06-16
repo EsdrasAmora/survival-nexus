@@ -1,4 +1,4 @@
-/** Types generated for queries found in "src/survivor/survivor.sql" */
+/** Types generated for queries found in "src/survivor/survivor.queries.sql" */
 import { PreparedQuery } from '@pgtyped/runtime';
 
 export type gender_type = 'F' | 'M' | 'Other';
@@ -213,9 +213,11 @@ export interface IFindManySurvivorsResult {
   gender: gender_type;
   id: number;
   infected: boolean;
+  itemId: number;
   lastLocation: { x: number; y: number } | null;
   name: string;
-  total: number;
+  quantity: number;
+  remaining: number;
   updatedAt: Date | null;
 }
 
@@ -225,23 +227,26 @@ export interface IFindManySurvivorsQuery {
   result: IFindManySurvivorsResult;
 }
 
-const findManySurvivorsIR: any = {"usedParamSet":{"cursorId":true,"limit":true},"params":[{"name":"cursorId","required":true,"transform":{"type":"scalar"},"locs":[{"a":342,"b":352}]},{"name":"limit","required":true,"transform":{"type":"scalar"},"locs":[{"a":394,"b":401}]}],"statement":"SELECT\n    (COUNT(*) OVER()) :: INT AS \"total!\",\n    survivor_id AS \"id\",\n    NAME AS \"name\",\n    birthday AS \"birthday\",\n    gender AS \"gender\",\n    last_location AS \"lastLocation\",\n    infected AS \"infected\",\n    created_at AS \"createdAt\",\n    updated_at AS \"updatedAt\"\nFROM\n    survivors\nWHERE\n    deleted_at IS NULL\n    AND survivor_id > :cursorId !\nORDER BY\n    survivor_id DESC\nLIMIT\n    :limit !"};
+const findManySurvivorsIR: any = {"usedParamSet":{"cursorId":true,"limit":true},"params":[{"name":"cursorId","required":true,"transform":{"type":"scalar"},"locs":[{"a":476,"b":486}]},{"name":"limit","required":true,"transform":{"type":"scalar"},"locs":[{"a":528,"b":535}]}],"statement":"SELECT\n    (COUNT(*) OVER()) :: INT AS \"remaining!\",\n    s.survivor_id AS \"id\",\n    s.NAME AS \"name\",\n    s.birthday AS \"birthday\",\n    s.gender AS \"gender\",\n    s.last_location AS \"lastLocation\",\n    s.infected AS \"infected\",\n    s.created_at AS \"createdAt\",\n    s.updated_at AS \"updatedAt\",\n    si.item_id AS \"itemId\",\n    si.quantity AS \"quantity\"\nFROM\n    survivors s\n    LEFT JOIN survivors_items si USING (survivor_id)\nWHERE\n    deleted_at IS NULL\n    AND survivor_id > :cursorId !\nORDER BY\n    survivor_id DESC\nLIMIT\n    :limit !"};
 
 /**
  * Query generated from SQL:
  * ```
  * SELECT
- *     (COUNT(*) OVER()) :: INT AS "total!",
- *     survivor_id AS "id",
- *     NAME AS "name",
- *     birthday AS "birthday",
- *     gender AS "gender",
- *     last_location AS "lastLocation",
- *     infected AS "infected",
- *     created_at AS "createdAt",
- *     updated_at AS "updatedAt"
+ *     (COUNT(*) OVER()) :: INT AS "remaining!",
+ *     s.survivor_id AS "id",
+ *     s.NAME AS "name",
+ *     s.birthday AS "birthday",
+ *     s.gender AS "gender",
+ *     s.last_location AS "lastLocation",
+ *     s.infected AS "infected",
+ *     s.created_at AS "createdAt",
+ *     s.updated_at AS "updatedAt",
+ *     si.item_id AS "itemId",
+ *     si.quantity AS "quantity"
  * FROM
- *     survivors
+ *     survivors s
+ *     LEFT JOIN survivors_items si USING (survivor_id)
  * WHERE
  *     deleted_at IS NULL
  *     AND survivor_id > :cursorId !

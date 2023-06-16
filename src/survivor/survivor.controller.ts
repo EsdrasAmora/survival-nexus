@@ -1,18 +1,25 @@
-import { Body, Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Query } from '@nestjs/common';
 import { UpdateSurvivorDto } from './dto/update-survivor.dto';
 import { SurvivorService } from './survivor.service';
 import { PaginatedSurvivorDto } from './dto/list-survivors.dto';
-import { AuthGuard } from '../auth/auth.guard';
 import { Token, TokenData } from '../auth/token-data.decorator';
 import { TradeSuvivorItemDto } from './dto/trade-suvivor-item.dto';
+import { PaginatedSurvivor } from './entities/paginated-survivor';
+import { ApiExtraModels, ApiResponse, getSchemaPath } from '@nestjs/swagger';
 
 @Controller('survivors')
-@UseGuards(AuthGuard)
 export class SurvivorController {
   constructor(private readonly survivorService: SurvivorService) {}
 
+  @ApiExtraModels(PaginatedSurvivor)
+  @ApiResponse({
+    status: 200,
+    schema: {
+      $ref: getSchemaPath(PaginatedSurvivor),
+    },
+  })
   @Get()
-  list(@Body() paginatedSurvivorDto: PaginatedSurvivorDto) {
+  list(@Query() paginatedSurvivorDto: PaginatedSurvivorDto): Promise<PaginatedSurvivor> {
     return this.survivorService.list(paginatedSurvivorDto);
   }
 

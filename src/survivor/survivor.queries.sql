@@ -71,17 +71,20 @@ WHERE
 
 /* @name FindManySurvivors */
 SELECT
-    (COUNT(*) OVER()) :: INT AS "total!",
-    survivor_id AS "id",
-    NAME AS "name",
-    birthday AS "birthday",
-    gender AS "gender",
-    last_location AS "lastLocation",
-    infected AS "infected",
-    created_at AS "createdAt",
-    updated_at AS "updatedAt"
+    (COUNT(*) OVER()) :: INT AS "remaining!",
+    s.survivor_id AS "id",
+    s.NAME AS "name",
+    s.birthday AS "birthday",
+    s.gender AS "gender",
+    s.last_location AS "lastLocation",
+    s.infected AS "infected",
+    s.created_at AS "createdAt",
+    s.updated_at AS "updatedAt",
+    si.item_id AS "itemId",
+    si.quantity AS "quantity"
 FROM
-    survivors
+    survivors s
+    LEFT JOIN survivors_items si USING (survivor_id)
 WHERE
     deleted_at IS NULL
     AND survivor_id > :cursorId !

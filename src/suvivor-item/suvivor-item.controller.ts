@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { CreateSuvivorItemDto } from './dto/create-item.dto';
 import { SuvivorItemService } from './suvivor-item.service';
-import { SuvivorItem } from './entities/suvivor-item.entity';
+import { Item } from './entities/suvivor-item.entity';
 
 @Controller('items')
 export class SuvivorItemController {
@@ -13,7 +13,7 @@ export class SuvivorItemController {
   }
 
   @Get()
-  findAll(): Promise<SuvivorItem[]> {
+  findAll(): Promise<Item[]> {
     return this.suvivorItemService.findAll();
   }
 }

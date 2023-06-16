@@ -7,12 +7,12 @@ import {
   resetItemsSeq,
   resetSurvivorsSeq,
   IGiveItemsParams,
-} from './seed.generated-queries';
+} from './seed.queries.generated';
 import { faker } from '@faker-js/faker';
 import { CryptoService } from '../auth/crypto.service';
 import { Gender } from '../survivor/entities/gender.enum';
-import { createItem } from '../suvivor-item/survivor-item.generated-queries';
 import type { Writeable } from 'zod';
+import { createItem } from '../suvivor-item/survivor-item.queries.generated';
 
 @Injectable()
 export class SeedService {

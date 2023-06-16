@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateSuvivorItemDto } from './dto/create-item.dto';
-import { createItem, findAllItems } from './survivor-item.generated-queries';
+import { createItem, findAllItems } from './survivor-item.queries.generated';
 import { DbClient } from '../shared/db.service';
 
 @Injectable()

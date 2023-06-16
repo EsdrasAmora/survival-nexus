@@ -3,8 +3,8 @@ import { Survivor } from './survivor.entity';
 
 export class PaginatedSurvivor {
   @ApiProperty()
-  total: number;
+  remaining: number;
 
-  @ApiProperty()
+  @ApiProperty({ type: [Survivor] })
   survivors: Survivor[];
 }

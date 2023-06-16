@@ -1,6 +1,7 @@
 import { Gender } from './gender.enum';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { GeoLocation } from './location';
+import { SurvivorItem } from './survivor-item';
 
 export class Survivor {
   @ApiProperty()
@@ -15,9 +16,12 @@ export class Survivor {
   @ApiProperty()
   gender: Gender;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ type: GeoLocation })
   lastLocation: GeoLocation | null;
 
   @ApiProperty()
   infected: boolean;
+
+  @ApiProperty({ type: [SurvivorItem] })
+  items: SurvivorItem[];
 }

@@ -1,7 +1,6 @@
 import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { CreateSurvivorDto } from './dto/create-survivor.dto';
 import { UpdateSurvivorDto } from './dto/update-survivor.dto';
-import { PaginatedSurvivor } from './entities/paginated-survivor';
 import {
   createSurvivor,
   deleteSurvivalItem,
@@ -14,7 +13,7 @@ import {
   tradeSurvivorItems,
   updateSurvivor,
   upsertSurvivorItems,
-} from './survivor.generated-queries';
+} from './survivor.queries.generated';
 import { PaginatedSurvivorDto } from './dto/list-survivors.dto';
 import { DbClient } from '../shared/db.service';
 import { TradeSuvivorItemDto } from './dto/trade-suvivor-item.dto';
@@ -23,6 +22,7 @@ import { UpdateSuvivorItemDto } from './dto/update-suvivor-item.dto';
 import { CryptoService } from '../auth/crypto.service';
 import { JwtService } from '../auth/jwt.service';
 import { LoginDto } from './dto/login.dto';
+import { Survivor } from './entities/survivor.entity';
 
 @Injectable()
 export class SurvivorService {
@@ -143,14 +143,25 @@ export class SurvivorService {
     );
   }
 
-  async list({ cursorId, limit }: PaginatedSurvivorDto): Promise<PaginatedSurvivor> {
+  async list({ cursorId, limit }: PaginatedSurvivorDto) {
     const survivors = await findManySurvivors.run({ cursorId, limit }, this.dbClient);
+    const result = survivors.reduce((acc, it) => {
+      const survivor = acc.get(it.id);
+      if (survivor) {
+        survivor.items.push({ id: it.itemId, quantity: it.quantity });
+      } else {
+        acc.set(it.id, {
+          ...it,
+          lastLocation: it.lastLocation && { lat: it.lastLocation.x, lng: it.lastLocation.y },
+          items: it.itemId ? [{ id: it.itemId, quantity: it.quantity }] : [],
+        });
+      }
+      return acc;
+    }, new Map<number, Survivor>());
+
     return {
-      total: survivors[0]?.total ?? 0,
-      survivors: survivors.map((it) => ({
-        ...it,
-        lastLocation: it.lastLocation && { lat: it.lastLocation.x, lng: it.lastLocation.y },
-      })),
+      remaining: survivors[0]?.remaining ?? 0,
+      survivors: Array.from(result.values()),
     };
   }
 

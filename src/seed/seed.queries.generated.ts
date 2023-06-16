@@ -1,4 +1,4 @@
-/** Types generated for queries found in "src/seed/seed.sql" */
+/** Types generated for queries found in "src/seed/seed.queries.sql" */
 import { PreparedQuery } from '@pgtyped/runtime';
 
 export type gender_type = 'F' | 'M' | 'Other';

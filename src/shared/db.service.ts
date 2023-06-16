@@ -20,6 +20,13 @@ export class DbClient implements IDatabaseConnection, OnModuleInit, OnModuleDest
       query_timeout: 10000,
     });
 
+    //TODO: remove this logging
+    const oldPoolQuery = this.pool.query;
+    this.pool.query = (...args: any) => {
+      this.logger.log(`QUERY: ${args.at(-1)}`);
+      return oldPoolQuery.apply(this.pool, args);
+    };
+
     try {
       this.logger.log(`Test connection: ${(await this.pool.query('SELECT NOW()')).rows[0].now}`);
     } catch (err) {

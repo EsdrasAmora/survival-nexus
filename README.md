@@ -9,7 +9,7 @@ You must have [NodeJS](https://nodejs.org/en) >=18 and [PNPM](https://pnpm.io/in
 1. Migrate the database `pnpm migrate:dev`, add some data with `pnpm seed`.
 1. Confirm that nothing else is running at http://localhost:3000.
 1. Run `pnpm test` to run the tests.
-1. Run `pnpm start:dev` to run the code with file watch.
+1. Run `pnpm start` to start the server.
 1. Visit http://localhost:3000/api and use the swagger UI to make requests against the web server.
 
 ## Docker
