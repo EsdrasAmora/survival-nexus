@@ -72,11 +72,15 @@ export class SurvivorService {
   }
 
   async infectedSurvivorsReport() {
-    return infectedSurvivorsReport.run(undefined, this.dbClient);
+    const data = await infectedSurvivorsReport.run(undefined, this.dbClient);
+    const total = data.reduce((acc, { amount }) => acc + (amount ?? 0), 0);
+    const { amount } = data.find(({ infected }) => infected) ?? {};
+    return { total, infected: amount ?? 0 };
   }
 
   async itemsPerSurvivorsReport() {
-    return itemsPerSurvivorsReport.run(undefined, this.dbClient);
+    const data = itemsPerSurvivorsReport.run(undefined, this.dbClient);
+    return data;
   }
 
   async updateItems(toSurvivorId: number, input: UpdateSuvivorItemDto) {
@@ -112,7 +116,9 @@ export class SurvivorService {
 
     const source = items.find((it) => it.survivorId === input.fromSurvivorId);
     if (!source || source.quantity < input.quantity) {
-      throw new BadRequestException(`Not enough items, current quantity: ${source?.quantity ?? 0}`);
+      throw new BadRequestException(
+        `Not enough items. requested survivor currently has: ${source?.quantity ?? 0} of item ${input.itemId}`,
+      );
     }
 
     if (source.quantity === input.quantity) {

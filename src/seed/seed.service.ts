@@ -60,7 +60,7 @@ export class SeedService {
     const itemSurvivorPair: Writeable<IGiveItemsParams['itemSurvivorPair']> = [];
 
     for (let survivorId = 1; survivorId < this.survivorsCount; survivorId++) {
-      for (let itemId = 1; itemId < 4; itemId++) {
+      for (let itemId = 1; itemId <= 4; itemId++) {
         if (faker.datatype.boolean(0.4)) {
           continue;
         }

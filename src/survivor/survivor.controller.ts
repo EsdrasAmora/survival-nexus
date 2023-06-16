@@ -5,7 +5,7 @@ import { PaginatedSurvivorDto } from './dto/list-survivors.dto';
 import { Token, TokenData } from '../auth/token-data.decorator';
 import { TradeSuvivorItemDto } from './dto/trade-suvivor-item.dto';
 import { PaginatedSurvivor } from './entities/paginated-survivor';
-import { ApiBearerAuth, ApiExtraModels, ApiResponse, getSchemaPath } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiExtraModels, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('survivors')
@@ -17,9 +17,7 @@ export class SurvivorController {
   @ApiExtraModels(PaginatedSurvivor)
   @ApiResponse({
     status: 200,
-    schema: {
-      $ref: getSchemaPath(PaginatedSurvivor),
-    },
+    type: PaginatedSurvivor,
   })
   @Get()
   list(@Query() paginatedSurvivorDto: PaginatedSurvivorDto): Promise<PaginatedSurvivor> {
@@ -27,12 +25,12 @@ export class SurvivorController {
   }
 
   @Post('items/trade')
-  trade(@Token() { survivorId }: TokenData, @Body() data: TradeSuvivorItemDto) {
+  trade(@Token() { survivorId }: TokenData, @Body() data: TradeSuvivorItemDto): Promise<void> {
     return this.survivorService.trade(survivorId, data);
   }
 
   @Patch()
-  update(@Token() { survivorId }: TokenData, @Body() data: UpdateSurvivorDto) {
+  update(@Token() { survivorId }: TokenData, @Body() data: UpdateSurvivorDto): Promise<void> {
     return this.survivorService.update(survivorId, data);
   }
 }

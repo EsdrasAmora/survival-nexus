@@ -415,7 +415,7 @@ export type IInfectedSurvivorsReportParams = void;
 
 /** 'InfectedSurvivorsReport' return type */
 export interface IInfectedSurvivorsReportResult {
-  amount: string | null;
+  amount: number | null;
   infected: boolean;
 }
 
@@ -425,14 +425,14 @@ export interface IInfectedSurvivorsReportQuery {
   result: IInfectedSurvivorsReportResult;
 }
 
-const infectedSurvivorsReportIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT\n    infected,\n    COUNT(*) AS \"amount\"\nFROM\n    survivors\nGROUP BY\n    infected                                                               "};
+const infectedSurvivorsReportIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT\n    infected,\n    COUNT(*) :: INT AS \"amount\"\nFROM\n    survivors\nGROUP BY\n    infected                                                               "};
 
 /**
  * Query generated from SQL:
  * ```
  * SELECT
  *     infected,
- *     COUNT(*) AS "amount"
+ *     COUNT(*) :: INT AS "amount"
  * FROM
  *     survivors
  * GROUP BY
@@ -447,10 +447,10 @@ export type IItemsPerSurvivorsReportParams = void;
 
 /** 'ItemsPerSurvivorsReport' return type */
 export interface IItemsPerSurvivorsReportResult {
-  amount: string | null;
+  amount: number | null;
   avarge: number | null;
   itemId: number;
-  total: string | null;
+  total: number | null;
 }
 
 /** 'ItemsPerSurvivorsReport' query type */
@@ -459,15 +459,15 @@ export interface IItemsPerSurvivorsReportQuery {
   result: IItemsPerSurvivorsReportResult;
 }
 
-const itemsPerSurvivorsReportIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT\n    si.item_id AS \"itemId\",\n    SUM(si.quantity) AS \"amount\",\n    MAX(survivors_count.total) AS \"total\",\n    SUM(si.quantity) :: FLOAT / MAX(survivors_count.total) AS \"avarge\"\nFROM\n    survivors_items si\n    CROSS JOIN (\n        SELECT\n            COUNT(*)\n        FROM\n            survivors\n    ) survivors_count (total)\nGROUP BY\n    si.item_id\nORDER BY\n    amount DESC"};
+const itemsPerSurvivorsReportIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT\n    si.item_id AS \"itemId\",\n    SUM(si.quantity) :: INT AS \"amount\",\n    MAX(survivors_count.total) :: INT AS \"total\",\n    SUM(si.quantity) :: FLOAT / MAX(survivors_count.total) AS \"avarge\"\nFROM\n    survivors_items si\n    CROSS JOIN (\n        SELECT\n            COUNT(*)\n        FROM\n            survivors\n    ) survivors_count (total)\nGROUP BY\n    si.item_id\nORDER BY\n    amount DESC"};
 
 /**
  * Query generated from SQL:
  * ```
  * SELECT
  *     si.item_id AS "itemId",
- *     SUM(si.quantity) AS "amount",
- *     MAX(survivors_count.total) AS "total",
+ *     SUM(si.quantity) :: INT AS "amount",
+ *     MAX(survivors_count.total) :: INT AS "total",
  *     SUM(si.quantity) :: FLOAT / MAX(survivors_count.total) AS "avarge"
  * FROM
  *     survivors_items si

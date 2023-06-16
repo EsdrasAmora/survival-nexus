@@ -148,7 +148,7 @@ UPDATE
 /* @name InfectedSurvivorsReport */
 SELECT
     infected,
-    COUNT(*) AS "amount"
+    COUNT(*) :: INT AS "amount"
 FROM
     survivors
 GROUP BY
@@ -159,8 +159,8 @@ GROUP BY
 /* @name ItemsPerSurvivorsReport */
 SELECT
     si.item_id AS "itemId",
-    SUM(si.quantity) AS "amount",
-    MAX(survivors_count.total) AS "total",
+    SUM(si.quantity) :: INT AS "amount",
+    MAX(survivors_count.total) :: INT AS "total",
     SUM(si.quantity) :: FLOAT / MAX(survivors_count.total) AS "avarge"
 FROM
     survivors_items si
