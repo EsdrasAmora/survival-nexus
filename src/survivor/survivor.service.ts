@@ -64,11 +64,17 @@ export class SurvivorService {
   }
 
   async findOneById(survivorId: number) {
-    const [survivor] = await findSurvivorById.run({ survivorId }, this.dbClient);
-    if (!survivor) {
+    const data = await findSurvivorById.run({ survivorId }, this.dbClient);
+    if (!data.length) {
       throw new Error('Survivor not found');
     }
-    return survivor;
+    const items = data.map(({ itemId, quantity }) => ({ id: itemId, quantity }));
+    const [survivor] = data;
+    return {
+      ...survivor,
+      items,
+      lastLocation: survivor.lastLocation && { lat: survivor.lastLocation.x, lng: survivor.lastLocation.y },
+    };
   }
 
   async infectedSurvivorsReport() {
@@ -78,9 +84,8 @@ export class SurvivorService {
     return { total, infected: amount ?? 0 };
   }
 
-  async itemsPerSurvivorsReport() {
-    const data = itemsPerSurvivorsReport.run(undefined, this.dbClient);
-    return data;
+  itemsPerSurvivorsReport() {
+    return itemsPerSurvivorsReport.run(undefined, this.dbClient);
   }
 
   async updateItems(toSurvivorId: number, input: UpdateSuvivorItemDto) {

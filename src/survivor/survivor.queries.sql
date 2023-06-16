@@ -24,17 +24,20 @@ VALUES
 
 /* @name FindSurvivorById */
 SELECT
-    survivor_id AS "id",
-    NAME AS "name",
-    email,
-    birthday,
-    gender,
-    infected,
-    last_location AS "lastLocation",
-    created_at AS "createdAt",
-    updated_at AS "updatedAt"
+    s.survivor_id AS "id",
+    s.NAME AS "name",
+    s.email,
+    s.birthday,
+    s.gender,
+    s.infected,
+    s.last_location AS "lastLocation",
+    s.created_at AS "createdAt",
+    s.updated_at AS "updatedAt",
+    si.item_id AS "itemId",
+    si.quantity AS "quantity"
 FROM
-    survivors
+    survivors s
+    LEFT JOIN survivors_items si USING (survivor_id)
 WHERE
     survivor_id = :survivorId !;
 
@@ -159,9 +162,9 @@ GROUP BY
 /* @name ItemsPerSurvivorsReport */
 SELECT
     si.item_id AS "itemId",
-    SUM(si.quantity) :: INT AS "amount",
-    MAX(survivors_count.total) :: INT AS "total",
-    SUM(si.quantity) :: FLOAT / MAX(survivors_count.total) AS "avarge"
+    (SUM(si.quantity) :: INT) AS "amount!",
+    (MAX(survivors_count.total) :: INT) AS "total!",
+    SUM(si.quantity) :: FLOAT / MAX(survivors_count.total) AS "avarge!"
 FROM
     survivors_items si
     CROSS JOIN (
@@ -173,4 +176,4 @@ FROM
 GROUP BY
     si.item_id
 ORDER BY
-    amount DESC;
+    "amount!" DESC;

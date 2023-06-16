@@ -73,8 +73,10 @@ export interface IFindSurvivorByIdResult {
   gender: gender_type;
   id: number;
   infected: boolean;
+  itemId: number;
   lastLocation: { x: number; y: number } | null;
   name: string;
+  quantity: number;
   updatedAt: Date | null;
 }
 
@@ -84,23 +86,26 @@ export interface IFindSurvivorByIdQuery {
   result: IFindSurvivorByIdResult;
 }
 
-const findSurvivorByIdIR: any = {"usedParamSet":{"survivorId":true},"params":[{"name":"survivorId","required":true,"transform":{"type":"scalar"},"locs":[{"a":244,"b":256}]}],"statement":"SELECT\n    survivor_id AS \"id\",\n    NAME AS \"name\",\n    email,\n    birthday,\n    gender,\n    infected,\n    last_location AS \"lastLocation\",\n    created_at AS \"createdAt\",\n    updated_at AS \"updatedAt\"\nFROM\n    survivors\nWHERE\n    survivor_id = :survivorId !"};
+const findSurvivorByIdIR: any = {"usedParamSet":{"survivorId":true},"params":[{"name":"survivorId","required":true,"transform":{"type":"scalar"},"locs":[{"a":376,"b":388}]}],"statement":"SELECT\n    s.survivor_id AS \"id\",\n    s.NAME AS \"name\",\n    s.email,\n    s.birthday,\n    s.gender,\n    s.infected,\n    s.last_location AS \"lastLocation\",\n    s.created_at AS \"createdAt\",\n    s.updated_at AS \"updatedAt\",\n    si.item_id AS \"itemId\",\n    si.quantity AS \"quantity\"\nFROM\n    survivors s\n    LEFT JOIN survivors_items si USING (survivor_id)\nWHERE\n    survivor_id = :survivorId !"};
 
 /**
  * Query generated from SQL:
  * ```
  * SELECT
- *     survivor_id AS "id",
- *     NAME AS "name",
- *     email,
- *     birthday,
- *     gender,
- *     infected,
- *     last_location AS "lastLocation",
- *     created_at AS "createdAt",
- *     updated_at AS "updatedAt"
+ *     s.survivor_id AS "id",
+ *     s.NAME AS "name",
+ *     s.email,
+ *     s.birthday,
+ *     s.gender,
+ *     s.infected,
+ *     s.last_location AS "lastLocation",
+ *     s.created_at AS "createdAt",
+ *     s.updated_at AS "updatedAt",
+ *     si.item_id AS "itemId",
+ *     si.quantity AS "quantity"
  * FROM
- *     survivors
+ *     survivors s
+ *     LEFT JOIN survivors_items si USING (survivor_id)
  * WHERE
  *     survivor_id = :survivorId !
  * ```
@@ -447,10 +452,10 @@ export type IItemsPerSurvivorsReportParams = void;
 
 /** 'ItemsPerSurvivorsReport' return type */
 export interface IItemsPerSurvivorsReportResult {
-  amount: number | null;
-  avarge: number | null;
+  amount: number;
+  avarge: number;
   itemId: number;
-  total: number | null;
+  total: number;
 }
 
 /** 'ItemsPerSurvivorsReport' query type */
@@ -459,16 +464,16 @@ export interface IItemsPerSurvivorsReportQuery {
   result: IItemsPerSurvivorsReportResult;
 }
 
-const itemsPerSurvivorsReportIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT\n    si.item_id AS \"itemId\",\n    SUM(si.quantity) :: INT AS \"amount\",\n    MAX(survivors_count.total) :: INT AS \"total\",\n    SUM(si.quantity) :: FLOAT / MAX(survivors_count.total) AS \"avarge\"\nFROM\n    survivors_items si\n    CROSS JOIN (\n        SELECT\n            COUNT(*)\n        FROM\n            survivors\n    ) survivors_count (total)\nGROUP BY\n    si.item_id\nORDER BY\n    amount DESC"};
+const itemsPerSurvivorsReportIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT\n    si.item_id AS \"itemId\",\n    (SUM(si.quantity) :: INT) AS \"amount!\",\n    (MAX(survivors_count.total) :: INT) AS \"total!\",\n    SUM(si.quantity) :: FLOAT / MAX(survivors_count.total) AS \"avarge!\"\nFROM\n    survivors_items si\n    CROSS JOIN (\n        SELECT\n            COUNT(*)\n        FROM\n            survivors\n    ) survivors_count (total)\nGROUP BY\n    si.item_id\nORDER BY\n    \"amount!\" DESC"};
 
 /**
  * Query generated from SQL:
  * ```
  * SELECT
  *     si.item_id AS "itemId",
- *     SUM(si.quantity) :: INT AS "amount",
- *     MAX(survivors_count.total) :: INT AS "total",
- *     SUM(si.quantity) :: FLOAT / MAX(survivors_count.total) AS "avarge"
+ *     (SUM(si.quantity) :: INT) AS "amount!",
+ *     (MAX(survivors_count.total) :: INT) AS "total!",
+ *     SUM(si.quantity) :: FLOAT / MAX(survivors_count.total) AS "avarge!"
  * FROM
  *     survivors_items si
  *     CROSS JOIN (
@@ -480,7 +485,7 @@ const itemsPerSurvivorsReportIR: any = {"usedParamSet":{},"params":[],"statement
  * GROUP BY
  *     si.item_id
  * ORDER BY
- *     amount DESC
+ *     "amount!" DESC
  * ```
  */
 export const itemsPerSurvivorsReport = new PreparedQuery<IItemsPerSurvivorsReportParams,IItemsPerSurvivorsReportResult>(itemsPerSurvivorsReportIR);

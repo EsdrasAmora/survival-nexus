@@ -4,26 +4,40 @@ import { CreateSurvivorDto } from './dto/create-survivor.dto';
 import { LoginDto } from './dto/login.dto';
 import { SurvivorService } from './survivor.service';
 import { AuthGuard } from '../auth/auth.guard';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import { AcessTokenDto } from './entities/acess-token.dto';
+import { Survivor } from './entities/survivor.entity';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly survivorService: SurvivorService) {}
 
   @Post()
-  create(@Body() createSurvivorDto: CreateSurvivorDto) {
+  @ApiResponse({
+    status: 201,
+    type: AcessTokenDto,
+  })
+  create(@Body() createSurvivorDto: CreateSurvivorDto): Promise<AcessTokenDto> {
     return this.survivorService.create(createSurvivorDto);
   }
 
   @Post('login')
-  login(@Body() createSurvivorDto: LoginDto) {
+  @ApiResponse({
+    status: 201,
+    type: AcessTokenDto,
+  })
+  login(@Body() createSurvivorDto: LoginDto): Promise<AcessTokenDto> {
     return this.survivorService.login(createSurvivorDto);
   }
 
   @Get('me')
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
-  me(@Token() { survivorId }: TokenData) {
+  @ApiResponse({
+    status: 200,
+    type: Survivor,
+  })
+  me(@Token() { survivorId }: TokenData): Promise<Survivor> {
     return this.survivorService.findOneById(survivorId);
   }
 }
