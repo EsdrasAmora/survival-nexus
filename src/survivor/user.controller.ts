@@ -1,7 +1,8 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { CreateSurvivorDto } from './dto/create-survivor.dto';
-import { SurvivorService } from './survivor.service';
 import { Token, TokenData } from '../auth/token-data.decorator';
+import { CreateSurvivorDto } from './dto/create-survivor.dto';
+import { LoginDto } from './dto/login.dto';
+import { SurvivorService } from './survivor.service';
 
 @Controller('users')
 export class UserController {
@@ -13,7 +14,7 @@ export class UserController {
   }
 
   @Post('login')
-  login(@Body() createSurvivorDto: CreateSurvivorDto) {
+  login(@Body() createSurvivorDto: LoginDto) {
     return this.survivorService.login(createSurvivorDto);
   }
 

@@ -20,12 +20,13 @@ Run `docker compose up -d --build` (root privileges may be necessary).
 ## Stack
 
 I could have used [Prisma](https://www.prisma.io/), witch I'm already familiar with, but decided to used some other options that was interested in.
-For migrations and to manage the database schema I used [atlas](https://atlasgo.io/).
-It's pretty similar to the way that Prisma migrate works, but seems to be way less limiting.
+For migrations and to manage the database schema I used [atlas](https://atlasgo.io/),
+It's kinda similar to the way that Prisma migrate works, but seems to be way less limiting, the schema definition can be found at `schema.hcl` file.
 For querying I used [Pgtyped](https://pgtyped.dev/docs/) to generate type safe definitions from sql queries.
 
 I wanted to use zod instead of class-validators but got no time to try it out ([nestjs-zod](https://www.npmjs.com/package/nestjs-zod)).
 I haven't used NestJS mutch before doing this. I like the modules and DI stuff, but besides that I didn't like it that mutch.
+The recommended way of doing validation with "class-validator" has a LOT of foot guns, @Query don't get parsed properly, validation of nested objects is weird, and the error messages are not that helpfull.  
 I probably could have done better in some organizational aspects, probably would split the modules/services in a different way.
 
 \*\*Obs: this project was developed and tested only on Linux (EndevaourOS).

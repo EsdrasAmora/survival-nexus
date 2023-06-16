@@ -15,8 +15,7 @@ export class JwtService {
   constructor(private config: AppConfigService) {}
 
   verify(token: string) {
-    const splitToken = token.split(' ')[1];
-    return this.jwtSchema.parse(verify(splitToken, this.config.get('JWT_SECRET')));
+    return this.jwtSchema.parse(verify(token, this.config.get('JWT_SECRET')));
   }
 
   sign(payload: object): string {

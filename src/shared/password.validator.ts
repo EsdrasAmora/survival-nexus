@@ -28,7 +28,7 @@ export class PasswordValidator implements ValidatorConstraintInterface {
     return errors;
   }
 
-  defaultMessage(value: unknown) {
-    return this.checkErrors(value).join(';\n');
+  defaultMessage(args: any) {
+    return `Password: ${this.checkErrors(args.value).join(`;`)}`;
   }
 }

@@ -18,6 +18,7 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
+    .addBearerAuth()
     .setTitle('Survivor Nexus API')
     .setDescription('Survivor API - Saving the world one survivor at a time')
     .setVersion('1.0')

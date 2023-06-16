@@ -1,13 +1,16 @@
-import { Body, Controller, Get, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { UpdateSurvivorDto } from './dto/update-survivor.dto';
 import { SurvivorService } from './survivor.service';
 import { PaginatedSurvivorDto } from './dto/list-survivors.dto';
 import { Token, TokenData } from '../auth/token-data.decorator';
 import { TradeSuvivorItemDto } from './dto/trade-suvivor-item.dto';
 import { PaginatedSurvivor } from './entities/paginated-survivor';
-import { ApiExtraModels, ApiResponse, getSchemaPath } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiExtraModels, ApiResponse, getSchemaPath } from '@nestjs/swagger';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('survivors')
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 export class SurvivorController {
   constructor(private readonly survivorService: SurvivorService) {}
 
